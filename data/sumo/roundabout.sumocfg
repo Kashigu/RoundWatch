@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- RoundWatch: SUMO Configuration for Town03 Roundabout Co-Simulation -->
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+    <input>
+        <net-file value="Town03.net.xml"/>
+        <route-files value="roundabout.rou.xml"/>
+    </input>
+    <time>
+        <begin value="0"/>
+        <end value="120"/>
+        <step-length value="0.05"/>
+    </time>
+    <processing>
+        <collision.action value="warn"/>
+        <collision.check-junctions value="true"/>
+        <collision.stoptime value="2.0"/>
+        <time-to-teleport value="-1"/>
+    </processing>
+    <gui_only>
+        <gui-settings-file value="viewsettings.xml"/>
+    </gui_only>
+</configuration>

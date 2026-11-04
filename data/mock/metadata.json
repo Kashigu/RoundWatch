@@ -1,0 +1,24 @@
+{
+  "num_vehicles": 16,
+  "duration_sec": 32.0,
+  "fps": 20,
+  "classes": [
+    "car",
+    "bus",
+    "truck",
+    "motorcycle"
+  ],
+  "maneuvers": [
+    "Compliant_Exit1",
+    "Compliant_Exit2Plus",
+    "Infraction_OuterLaneMisuse",
+    "Infraction_DirectCutOffExit"
+  ],
+  "pixels_per_meter": 13.5,
+  "origin_px": [
+    960,
+    540
+  ],
+  "video_file": "data\\mock\\synthetic_roundabout_feed.mp4",
+  "json_file": "data\\mock\\ground_truth_trajectories.json"
+}

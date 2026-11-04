@@ -1,0 +1,37 @@
+{
+  "overall_accuracy": 1.0,
+  "macro_f1": 1.0,
+  "best_epoch_acc": 1.0,
+  "per_class": {
+    "COMPLIANT_EXIT_1": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "samples": 65
+    },
+    "COMPLIANT_EXIT_2PLUS": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "samples": 68
+    },
+    "INFRACTION_OUTER_MISUSE": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "samples": 67
+    },
+    "INFRACTION_DIRECT_CUTOFF": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "samples": 80
+    }
+  },
+  "classes": [
+    "COMPLIANT_EXIT_1",
+    "COMPLIANT_EXIT_2PLUS",
+    "INFRACTION_OUTER_MISUSE",
+    "INFRACTION_DIRECT_CUTOFF"
+  ]
+}

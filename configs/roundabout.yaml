@@ -1,0 +1,63 @@
+# RoundWatch - Roundabout Geometry & Compliance Rules
+# Standard 2-lane circulatory roundabout (calibrated to CARLA Town03 roundabout)
+
+roundabout:
+  name: "Town03_Roundabout_Standard"
+  center: [0.0, 0.0] # [x, y] in road coordinates (meters)
+  
+  geometry:
+    island_radius: 14.0 # meters
+    inner_lane_radius: [14.0, 18.0] # [inner_boundary, outer_boundary]
+    outer_lane_radius: [18.0, 22.0]
+    total_radius: 22.0
+
+  legs:
+    leg_1_south:
+      id: 1
+      name: "South"
+      angle_deg: 270.0
+      entry_lanes: ["entry_south_right", "entry_south_left"]
+      exit_lanes: ["exit_south_right"]
+    leg_2_east:
+      id: 2
+      name: "East"
+      angle_deg: 0.0
+      entry_lanes: ["entry_east_right", "entry_east_left"]
+      exit_lanes: ["exit_east_right"]
+    leg_3_north:
+      id: 3
+      name: "North"
+      angle_deg: 90.0
+      entry_lanes: ["entry_north_right", "entry_north_left"]
+      exit_lanes: ["exit_north_right"]
+    leg_4_west:
+      id: 4
+      name: "West"
+      angle_deg: 180.0
+      entry_lanes: ["entry_west_right", "entry_west_left"]
+      exit_lanes: ["exit_west_right"]
+
+rules:
+  # Portuguese Highway Code (Código da Estrada - Artigo 14.º-A: Rotundas)
+  exit_1_rule:
+    description: "Vehicles intending to take the first exit must occupy the outermost right lane from entry to exit."
+    allowed_entry_lanes: ["right"]
+    allowed_circulatory_lanes: ["outer"]
+    allowed_exit_lanes: ["right"]
+
+  exit_subsequent_rule:
+    description: "Vehicles taking subsequent exits (2, 3, 4) must enter using the inner/left lane, circulate in the inner ring, and shift to the outer lane only just before the intended exit."
+    allowed_entry_lanes: ["left", "inner"]
+    circulatory_mandate: "inner_until_target_sector"
+    transition_sector: "prior_sector_outer_shift"
+
+  infractions:
+    outer_lane_misuse:
+      code: "INF_OUTER_MISUSE"
+      description: "Circulating in the outer lane past an exit without taking it (staying outer for exit 2+)."
+      severity: "medium"
+    direct_inner_cutoff:
+      code: "INF_DIRECT_CUTOFF"
+      description: "Exiting directly from the inner lane across outer circulatory traffic without occupying the outer lane first."
+      severity: "high"
+

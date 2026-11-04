@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='utf-8'?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    
+    <vType id="vehicle.audi.tt" vClass="passenger" length="4.5" width="2.0" maxSpeed="13.0" accel="2.2" decel="3.5" minGap="4.5" tau="1.8" jmIgnoreFoeProb="0.0" jmDriveAfterYellowTime="0" lcStrategic="1.2" lcCooperative="1.0" lcSpeedGain="0.0" lcKeepRight="1.0" color="0,220,70" />
+
+    <vType id="vehicle.mercedes.coupe" vClass="passenger" length="4.8" width="2.0" maxSpeed="13.0" accel="2.2" decel="3.5" minGap="4.5" tau="1.8" jmIgnoreFoeProb="0.0" jmDriveAfterYellowTime="0" lcStrategic="1.2" lcCooperative="1.0" lcSpeedGain="0.0" lcKeepRight="1.0" color="30,140,250" />
+
+    <vType id="vehicle.mini.cooper_s" vClass="passenger" length="3.8" width="1.8" maxSpeed="11.0" accel="2.0" decel="3.5" minGap="4.0" tau="1.8" jmIgnoreFoeProb="0.0" jmDriveAfterYellowTime="0" lcStrategic="0.2" lcCooperative="1.0" lcSpeedGain="0.0" lcKeepRight="3.0" color="230,40,40" />
+
+    <vType id="vehicle.ford.mustang" vClass="passenger" length="4.8" width="2.0" maxSpeed="14.0" accel="2.4" decel="3.5" minGap="4.5" tau="1.8" jmIgnoreFoeProb="0.0" jmDriveAfterYellowTime="0" lcStrategic="0.1" lcCooperative="1.0" lcSpeedGain="0.0" lcKeepRight="0.0" color="230,40,40" />
+
+    <vType id="vehicle.volkswagen.t2" vClass="passenger" length="5.0" width="2.0" maxSpeed="10.0" accel="1.5" decel="3.0" minGap="5.0" tau="2.0" jmIgnoreFoeProb="0.0" jmDriveAfterYellowTime="0" color="0,180,200" />
+
+    <vType id="vehicle.carlamotors.carlacola" vClass="truck" length="7.5" width="2.4" maxSpeed="9.0" accel="1.2" decel="2.5" minGap="5.5" tau="2.2" jmIgnoreFoeProb="0.0" jmDriveAfterYellowTime="0" color="220,180,20" />
+
+    
+    
+    <route id="route_north_exit1_east" edges="30 -10 46 8 7" />
+    <route id="route_north_exit2_south" edges="30 -10 -11 -35 15 -28" />
+    <route id="route_north_exit3_north" edges="30 -10 -11 -35 -36 -37 -13 16 -30" />
+
+    
+    <route id="route_east_exit1_south" edges="-8 34 15 -28" />
+    <route id="route_east_exit2_north" edges="-8 34 -36 -37 -13 16 -30" />
+    <route id="route_east_exit3_east" edges="-8 34 -36 -37 -13 -14 -9 -10 46 8 7" />
+
+    
+    <route id="route_south_exit1_north" edges="28 -25 -13 16 -30" />
+    <route id="route_south_exit2_east" edges="28 -25 -13 -14 -9 -10 46 8 7" />
+
+    
+    
+    <vehicle id="veh_01_audi_exit1" type="vehicle.audi.tt" route="route_north_exit1_east" depart="0.0" departLane="0" departSpeed="8.0" />
+
+    
+    <vehicle id="veh_02_mercedes_exit2" type="vehicle.mercedes.coupe" route="route_east_exit2_north" depart="2.5" departLane="1" departSpeed="8.0" />
+
+    
+    <vehicle id="veh_03_truck_cola" type="vehicle.carlamotors.carlacola" route="route_south_exit2_east" depart="5.0" departLane="0" departSpeed="7.0" />
+
+    
+    <vehicle id="veh_04_mercedes_exit2" type="vehicle.mercedes.coupe" route="route_north_exit2_south" depart="8.5" departLane="1" departSpeed="8.0" />
+
+    
+    <vehicle id="veh_05_bus_vw" type="vehicle.volkswagen.t2" route="route_south_exit1_north" depart="12.0" departLane="0" departSpeed="7.5" />
+
+    
+    <vehicle id="veh_06_mini_infraction" type="vehicle.mini.cooper_s" route="route_north_exit2_south" depart="15.5" departLane="0" departSpeed="8.0" />
+
+    
+    <vehicle id="veh_07_audi_exit1" type="vehicle.audi.tt" route="route_east_exit1_south" depart="19.0" departLane="0" departSpeed="8.0" />
+
+    
+    <vehicle id="veh_08_mustang_cutoff" type="vehicle.ford.mustang" route="route_east_exit1_south" depart="22.0" departLane="1" departSpeed="8.5" />
+
+    
+    <vehicle id="veh_09_mercedes_exit3" type="vehicle.mercedes.coupe" route="route_north_exit3_north" depart="29.0" departLane="1" departSpeed="8.0" />
+
+    
+    <vehicle id="veh_10_audi_exit1" type="vehicle.audi.tt" route="route_north_exit1_east" depart="34.0" departLane="0" departSpeed="8.0" />
+</routes>

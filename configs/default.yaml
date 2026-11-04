@@ -1,0 +1,86 @@
+# RoundWatch - Default System Configuration
+# Real-Time Roundabout Monitoring and Rule Compliance System
+
+system:
+  project_name: "RoundWatch"
+  version: "0.1.0"
+  random_seed: 42
+  device: "cuda" # cuda or cpu
+
+simulation:
+  simulator: "carla"
+  host: "127.0.0.1"
+  port: 2000
+  timeout_seconds: 10.0
+  map_name: "Town03"
+  synchronous_mode: true
+  fixed_delta_seconds: 0.05 # 20 FPS
+  sumo:
+    enabled: true
+    step_length: 0.05
+    config_file: "data/sumo/roundabout.sumocfg"
+
+camera:
+  selected_camera_id: "dual_opposite_lamp_poles"
+  dual_camera: true
+  cameras:
+    cam_perimeter_south:
+      type: "lamp_pole"
+      description: "South Highway Light Pole on splitter island (BP_HighwayLight_multiple_2)"
+      position: [0.71, -26.2, 11.5] # [x, y, z] in meters (1.5m forward to clear light fixture)
+      rotation: [-28.0, 88.0, 0.0] # [pitch, yaw, roll] in degrees
+      image_size: [1920, 1080] # [width, height]
+      fov: 90.0
+    cam_perimeter_north:
+      type: "lamp_pole"
+      description: "North Highway Light Pole on splitter island (BP_HighwayLight_multiple3)"
+      position: [-2.31, 27.2, 11.5] # [x, y, z] in meters (1.5m forward to clear light fixture)
+      rotation: [-28.0, -80.0, 0.0]
+      image_size: [1920, 1080]
+      fov: 90.0
+  height_ablation_levels: [10.0, 12.0, 14.0]
+
+perception:
+  model_type: "yolov8n"
+  weights_path: "models/yolov8n.pt"
+  confidence_threshold: 0.35
+  iou_threshold: 0.50
+  target_classes:
+    - 2  # car
+    - 3  # motorcycle
+    - 5  # bus
+    - 7  # truck
+  input_resolution: [640, 640]
+
+tracking:
+  tracker_type: "botsort"
+  track_high_thresh: 0.50
+  track_low_thresh: 0.10
+  new_track_thresh: 0.60
+  track_buffer: 40 # frames to keep lost tracks
+  match_thresh: 0.80
+  cmc_method: "orb" # camera motion compensation
+  with_reid: true
+
+compliance:
+  rule_standard: "portuguese_highway_code"
+  classifier_type: "mlp" # mlp, lstm, or rule_based
+  model_weights: "models/compliance_classifier.pt"
+  min_points_for_evaluation: 15
+  categories:
+    0: "Compliant_Exit1"
+    1: "Compliant_Exit2Plus"
+    2: "Infraction_OuterLaneMisuse"
+    3: "Infraction_DirectCutOffExit"
+
+visualization:
+  render_ar_corridors: true
+  interactive_selection_mode: true
+  colors:
+    permitted: [0, 230, 70]     # Green (BGR)
+    prohibited: [30, 30, 230]   # Red (BGR)
+    executed: [240, 150, 20]    # Blue/Cyan (BGR)
+    bounding_box: [220, 220, 220]
+  corridor_alpha: 0.40
+  line_thickness: 2
+
