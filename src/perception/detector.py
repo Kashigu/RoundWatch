@@ -38,7 +38,18 @@ class VehicleDetector:
     ) -> None:
         self.confidence_thresh = confidence_thresh
         self.iou_thresh = iou_thresh
-        self.device = device
+        if device.startswith("cuda"):
+            try:
+                import torch
+                # Test whether CUDA kernel actually executes on current GPU
+                test_tensor = torch.zeros(1, device="cuda")
+                del test_tensor
+                self.device = device
+            except Exception:
+                print(f"[Detector] CUDA device {device} kernel not supported by current PyTorch build. Falling back to CPU.")
+                self.device = "cpu"
+        else:
+            self.device = device
         self.model_name = model_name
 
         if YOLO is not None:

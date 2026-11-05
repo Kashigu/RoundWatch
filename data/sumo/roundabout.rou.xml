@@ -30,32 +30,44 @@
 
     
     
+    <!-- Initial 10 vehicles -->
     <vehicle id="veh_01_audi_exit1" type="vehicle.audi.tt" route="route_north_exit1_east" depart="0.0" departLane="0" departSpeed="8.0" />
-
-    
     <vehicle id="veh_02_mercedes_exit2" type="vehicle.mercedes.coupe" route="route_east_exit2_north" depart="2.5" departLane="1" departSpeed="8.0" />
-
-    
     <vehicle id="veh_03_truck_cola" type="vehicle.carlamotors.carlacola" route="route_south_exit2_east" depart="5.0" departLane="0" departSpeed="7.0" />
-
-    
     <vehicle id="veh_04_mercedes_exit2" type="vehicle.mercedes.coupe" route="route_north_exit2_south" depart="8.5" departLane="1" departSpeed="8.0" />
-
-    
     <vehicle id="veh_05_bus_vw" type="vehicle.volkswagen.t2" route="route_south_exit1_north" depart="12.0" departLane="0" departSpeed="7.5" />
-
-    
     <vehicle id="veh_06_mini_infraction" type="vehicle.mini.cooper_s" route="route_north_exit2_south" depart="15.5" departLane="0" departSpeed="8.0" />
-
-    
     <vehicle id="veh_07_audi_exit1" type="vehicle.audi.tt" route="route_east_exit1_south" depart="19.0" departLane="0" departSpeed="8.0" />
-
-    
     <vehicle id="veh_08_mustang_cutoff" type="vehicle.ford.mustang" route="route_east_exit1_south" depart="22.0" departLane="1" departSpeed="8.5" />
+    <vehicle id="veh_09_mercedes_exit3" type="vehicle.mercedes.coupe" route="route_north_exit3_north" depart="26.0" departLane="1" departSpeed="8.0" />
+    <vehicle id="veh_10_audi_exit1" type="vehicle.audi.tt" route="route_north_exit1_east" depart="30.0" departLane="0" departSpeed="8.0" />
 
-    
-    <vehicle id="veh_09_mercedes_exit3" type="vehicle.mercedes.coupe" route="route_north_exit3_north" depart="29.0" departLane="1" departSpeed="8.0" />
+    <!-- Wave 2: Continuous Flow & Higher Density Traffic (Vehicles 11 - 25) -->
+    <vehicle id="veh_11_audi_east_s" type="vehicle.audi.tt" route="route_east_exit1_south" depart="33.0" departLane="0" departSpeed="8.0" />
+    <vehicle id="veh_12_mercedes_south_n" type="vehicle.mercedes.coupe" route="route_south_exit1_north" depart="36.0" departLane="1" departSpeed="8.5" />
+    <vehicle id="veh_13_mustang_north_s" type="vehicle.ford.mustang" route="route_north_exit2_south" depart="39.0" departLane="1" departSpeed="8.0" />
+    <vehicle id="veh_14_mini_south_e" type="vehicle.mini.cooper_s" route="route_south_exit2_east" depart="42.0" departLane="0" departSpeed="7.5" />
+    <vehicle id="veh_15_vw_east_n" type="vehicle.volkswagen.t2" route="route_east_exit2_north" depart="45.5" departLane="0" departSpeed="7.0" />
+    <vehicle id="veh_16_audi_north_e" type="vehicle.audi.tt" route="route_north_exit1_east" depart="49.0" departLane="0" departSpeed="8.0" />
+    <vehicle id="veh_17_truck_north_s" type="vehicle.carlamotors.carlacola" route="route_north_exit2_south" depart="52.5" departLane="0" departSpeed="6.5" />
+    <vehicle id="veh_18_mercedes_east_e" type="vehicle.mercedes.coupe" route="route_east_exit3_east" depart="56.0" departLane="1" departSpeed="8.0" />
+    <vehicle id="veh_19_mustang_south_n" type="vehicle.ford.mustang" route="route_south_exit1_north" depart="59.5" departLane="1" departSpeed="8.5" />
+    <vehicle id="veh_20_mini_north_s" type="vehicle.mini.cooper_s" route="route_north_exit2_south" depart="63.0" departLane="0" departSpeed="7.5" />
+    <vehicle id="veh_21_audi_east_s" type="vehicle.audi.tt" route="route_east_exit1_south" depart="66.5" departLane="0" departSpeed="8.0" />
+    <vehicle id="veh_22_mercedes_north_s" type="vehicle.mercedes.coupe" route="route_north_exit2_south" depart="70.0" departLane="1" departSpeed="8.0" />
+    <vehicle id="veh_23_vw_south_e" type="vehicle.volkswagen.t2" route="route_south_exit2_east" depart="73.5" departLane="0" departSpeed="7.0" />
+    <vehicle id="veh_24_mustang_east_n" type="vehicle.ford.mustang" route="route_east_exit2_north" depart="77.0" departLane="1" departSpeed="8.5" />
+    <vehicle id="veh_25_audi_north_e" type="vehicle.audi.tt" route="route_north_exit1_east" depart="81.0" departLane="0" departSpeed="8.0" />
 
-    
-    <vehicle id="veh_10_audi_exit1" type="vehicle.audi.tt" route="route_north_exit1_east" depart="34.0" departLane="0" departSpeed="8.0" />
+    <!-- Wave 3: Extended Circulation (Vehicles 26 - 35) -->
+    <vehicle id="veh_26_mercedes_south_n" type="vehicle.mercedes.coupe" route="route_south_exit1_north" depart="85.0" departLane="1" departSpeed="8.0" />
+    <vehicle id="veh_27_mini_east_s" type="vehicle.mini.cooper_s" route="route_east_exit1_south" depart="89.0" departLane="0" departSpeed="7.5" />
+    <vehicle id="veh_28_truck_south_e" type="vehicle.carlamotors.carlacola" route="route_south_exit2_east" depart="93.0" departLane="0" departSpeed="6.5" />
+    <vehicle id="veh_29_audi_north_s" type="vehicle.audi.tt" route="route_north_exit2_south" depart="97.0" departLane="0" departSpeed="8.0" />
+    <vehicle id="veh_30_mustang_north_n" type="vehicle.ford.mustang" route="route_north_exit3_north" depart="101.0" departLane="1" departSpeed="8.5" />
+    <vehicle id="veh_31_mercedes_east_n" type="vehicle.mercedes.coupe" route="route_east_exit2_north" depart="105.0" departLane="1" departSpeed="8.0" />
+    <vehicle id="veh_32_vw_north_e" type="vehicle.volkswagen.t2" route="route_north_exit1_east" depart="109.0" departLane="0" departSpeed="7.0" />
+    <vehicle id="veh_33_audi_south_n" type="vehicle.audi.tt" route="route_south_exit1_north" depart="113.0" departLane="0" departSpeed="8.0" />
+    <vehicle id="veh_34_mini_north_s" type="vehicle.mini.cooper_s" route="route_north_exit2_south" depart="119.0" departLane="0" departSpeed="7.5" />
+    <vehicle id="veh_35_mercedes_east_n" type="vehicle.mercedes.coupe" route="route_east_exit2_north" depart="127.0" departLane="1" departSpeed="8.0" />
 </routes>
