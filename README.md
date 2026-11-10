@@ -4,49 +4,42 @@ An intelligent roadside monitoring architecture combining edge-based vehicle det
 
 ---
 
-## 1. System Directory Architecture
+## 1. Configure External Tools
 
-The system keeps application code strictly isolated from large simulation engines and heavy assets:
+External tool locations are machine-specific and belong in a local `.env` file,
+not in the source code. Copy the example and edit the paths for your machine:
 
-```
-E:\
-├── RoundWatch\                      <-- Git Repository / Your Application Code
-│   ├── configs/                     <-- Roundabout geometry & camera configs
-│   │   ├── default.yaml
-│   │   └── roundabout.yaml
-│   ├── src/
-│   │   ├── simulation/              <-- CARLA-SUMO synchronization & mock generator
-│   │   ├── perception/              <-- YOLO & BoT-SORT pipeline
-│   │   ├── compliance/              <-- Trajectory analysis & rule verification
-│   │   ├── visualization/           <-- AR overlays & interactive player
-│   │   └── evaluation/              <-- MOTA, IDsw, and ablation benchmarks
-│   ├── data/
-│   │   ├── sumo/                    <-- SUMO Town03.net.xml & route files
-│   │   ├── mock/                    <-- Synthetic video feeds & ground-truth logs
-│   │   └── recordings/              <-- Live CARLA video streams & trajectories
-│   ├── scripts/
-│   │   ├── start_carla.bat          <-- Quick launcher for CARLA UE4 Server
-│   │   └── test_carla_connection.py <-- Verification script for CARLA client
-│   └── .venv310/                    <-- Python 3.10 virtual environment
-│
-└── Simulation_Engines\              <-- Dedicated Simulator Directory (Non-Git)
-    ├── CARLA_0.9.15\                <-- Full CARLA 0.9.15 simulator (CarlaUE4.exe)
-    ├── SUMO\                        <-- Directory junction to SUMO 1.28.0
-    └── downloads\                   <-- Archive staging directory
+```powershell
+Copy-Item .env.example .env
 ```
 
----
+Set `CARLA_ROOT` to the CARLA directory containing `CarlaUE4.exe` and its
+`Co-Simulation\Sumo` folder, and `SUMO_HOME` to the SUMO installation directory
+containing `tools` and `bin`. `PYTHON_EXE` selects the interpreter used by the
+Windows launchers; it defaults to `python` on `PATH`. `SUMO_BINARY` is optional
+and only needed if SUMO's executable is not at the standard location under
+`SUMO_HOME`.
 
-## 2. Toolchain Status & Installed Versions
+Use unquoted `KEY=VALUE` entries in `.env`, including for paths with spaces.
+Existing process environment variables take precedence over values in the file.
+Python scripts load `.env` automatically, and the batch launchers read it as well.
+The local `.env` is ignored by Git; do not commit machine-specific paths.
+
+Repository-owned files such as maps and route configs remain relative to the
+repository and do not need per-machine configuration. Capture/inspection scripts
+write to `output/artifacts` by default; set `ARTIFACT_DIR` to change it. Set
+`TRANSCRIPT_FILE` only when using the one-off transcript inspection scripts.
+
+## 2. Toolchain
 
 | Component | Installed Version | Location |
 | :--- | :--- | :--- |
-| **Python** | **Python 3.10.11 (64-bit)** | System (`py -3.10`) & `E:\RoundWatch\.venv310` |
-| **CARLA Simulator** | **0.9.15** | `E:\Simulation_Engines\CARLA_0.9.15\CarlaUE4.exe` |
-| **CARLA Python API** | **0.9.16 (CP310)** | Installed in `E:\RoundWatch\.venv310` (`import carla`) |
-| **Eclipse SUMO** | **1.28.0 (64-bit)** | `C:\Program Files (x86)\SUMO\` (Linked at `E:\Simulation_Engines\SUMO`) |
-| **SUMO Python API** | **traci 1.28.0, sumolib 1.28.0** | Installed in `E:\RoundWatch\.venv310` |
-| **Town03 SUMO Map** | **Town03.net.xml** | `E:\RoundWatch\data\sumo\Town03.net.xml` (converted from Town03.xodr) |
+| **Python** | Python 3.10+ | Select with `PYTHON_EXE` or the active environment |
+| **CARLA Simulator** | 0.9.15 | `CARLA_ROOT` in `.env` |
+| **CARLA Python API** | Matching CARLA version | Installed in the selected Python environment (`import carla`) |
+| **Eclipse SUMO** | 1.28.0+ | `SUMO_HOME` in `.env` |
+| **SUMO Python API** | Matching SUMO version | Installed in the selected Python environment |
+| **Town03 SUMO Map** | `Town03.net.xml` | `data\sumo\Town03.net.xml` |
 
 ---
 
@@ -57,15 +50,15 @@ Run the launcher script:
 ```powershell
 .\scripts\start_carla.bat
 ```
-*(Or launch `E:\Simulation_Engines\CARLA_0.9.15\CarlaUE4.exe` directly).*
+The launcher reads `CARLA_ROOT` from `.env`.
 
 ### Step 2: Test CARLA Connection
 In PowerShell:
 ```powershell
-.\.venv310\Scripts\python.exe scripts/test_carla_connection.py
+python scripts/test_carla_connection.py
 ```
 
 ### Step 3: Run Unit Tests
 ```powershell
-.\.venv310\Scripts\python.exe -m pytest -v
+python -m pytest -v
 ```

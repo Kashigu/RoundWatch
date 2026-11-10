@@ -1,13 +1,14 @@
 import os
 import sys
 
-if "SUMO_HOME" not in os.environ:
-    os.environ["SUMO_HOME"] = r"E:\Simulation_Engines\SUMO"
-sys.path.append(os.path.join(os.environ["SUMO_HOME"], "tools"))
+from runtime_paths import configured_path, sumo_binary
+
+sumo_home = configured_path("SUMO_HOME")
+os.environ["SUMO_HOME"] = str(sumo_home)
+sys.path.append(str(sumo_home / "tools"))
 import traci
 
-sumo_binary = r"E:\Simulation_Engines\SUMO\bin\sumo.exe"
-sumo_cmd = [sumo_binary, "-c", "data/sumo/roundabout.sumocfg", "--no-step-log"]
+sumo_cmd = [str(sumo_binary()), "-c", "data/sumo/roundabout.sumocfg", "--no-step-log"]
 
 traci.start(sumo_cmd)
 
@@ -65,4 +66,3 @@ if jump_detected:
         print(f"  At t={j['time']:.2f}s: veh '{j['veh']}' jumped {j['delta']:.1f} deg (from {j['old_ang']:.1f} to {j['new_ang']:.1f}) on lane {j['lane']}")
 else:
     print("\nSUCCESS: 0 yaw jumps detected across all vehicles! Traversal is completely smooth!")
-

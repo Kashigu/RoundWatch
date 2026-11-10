@@ -6,6 +6,8 @@ import os
 import shutil
 from pathlib import Path
 
+from runtime_paths import artifact_directory
+
 client = carla.Client("127.0.0.1", 2000)
 client.set_timeout(10.0)
 world = client.get_world()
@@ -110,7 +112,7 @@ cam_bp = bp_lib.find("sensor.camera.rgb")
 cam_bp.set_attribute("image_size_x", "1920")
 cam_bp.set_attribute("image_size_y", "1080")
 
-artifact_dir = Path(r"C:\Users\orlan\.gemini\antigravity\brain\dc5e9231-1ac9-4f55-b832-205cbb1301e5")
+artifact_dir = artifact_directory()
 out_dir = Path("data/camera_tests")
 out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -156,4 +158,3 @@ for a in spawned:
 settings.synchronous_mode = False
 world.apply_settings(settings)
 print("All candidate camera views captured successfully!")
-

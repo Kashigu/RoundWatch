@@ -1,12 +1,13 @@
 import os
 import subprocess
 
-env = os.environ.copy()
-env["SUMO_HOME"] = r"E:\Simulation_Engines\SUMO"
+from runtime_paths import configured_path, sumo_binary
 
-cmd = [r"E:\Simulation_Engines\SUMO\bin\sumo.exe", "-c", "data/sumo/roundabout.sumocfg", "--no-step-log"]
+env = os.environ.copy()
+env["SUMO_HOME"] = str(configured_path("SUMO_HOME"))
+
+cmd = [str(sumo_binary()), "-c", "data/sumo/roundabout.sumocfg", "--no-step-log"]
 res = subprocess.run(cmd, capture_output=True, text=True, env=env)
 print("STDOUT:", res.stdout)
 print("STDERR:", res.stderr)
 print("Return code:", res.returncode)
-

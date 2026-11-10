@@ -6,6 +6,8 @@ import numpy as np
 import cv2
 import carla
 
+from runtime_paths import artifact_directory
+
 
 def capture_roundabout_frame(output_image_path: str = "data/recordings/carla_town03_roundabout_live.png"):
     print("Connecting to live CARLA instance...")
@@ -75,7 +77,7 @@ def capture_roundabout_frame(output_image_path: str = "data/recordings/carla_tow
         print(f"[SUCCESS] Saved live photorealistic CARLA frame to {out_path}")
 
         # Copy to artifact directory for display
-        art_path = Path(r"C:\Users\orlan\.gemini\antigravity\brain\dc5e9231-1ac9-4f55-b832-205cbb1301e5\carla_live_town03.png")
+        art_path = artifact_directory() / "carla_live_town03.png"
         cv2.imwrite(str(art_path), captured_frame)
         print(f"Saved artifact preview to {art_path}")
         return True
@@ -86,4 +88,3 @@ def capture_roundabout_frame(output_image_path: str = "data/recordings/carla_tow
 
 if __name__ == "__main__":
     capture_roundabout_frame()
-

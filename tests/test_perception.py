@@ -2,10 +2,26 @@
 
 import numpy as np
 import pytest
+from types import SimpleNamespace
 
+import src.perception.detector as detector_module
 from src.perception.detector import VehicleDetector
 from src.perception.homography import RoadwayHomography
 from src.perception.tracker import BoTSORTTracker, KalmanBoxTracker, DynamicMultiCameraTracker, pixel_to_road_ray
+
+
+def test_vehicle_detector_falls_back_to_cpu_without_cuda(monkeypatch):
+    monkeypatch.setattr(
+        detector_module,
+        "torch",
+        SimpleNamespace(cuda=SimpleNamespace(is_available=lambda: False)),
+    )
+    monkeypatch.setattr(detector_module, "YOLO", None)
+
+    with pytest.warns(RuntimeWarning, match="using CPU"):
+        detector = VehicleDetector(device="cuda:0")
+
+    assert detector.device == "cpu"
 
 
 def test_roadway_homography_roundtrip():
@@ -102,5 +118,4 @@ def test_dynamic_multi_camera_tracker_persistent_id():
     assert len(active_2) == 1
     assert active_2[0]["id"] == 1
     assert tracker.next_id == 2  # Incremented dynamically!
-
 

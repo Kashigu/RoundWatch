@@ -3,7 +3,9 @@ import os
 import time
 import socket
 
-carla_dir = r"E:\Simulation_Engines\CARLA_0.9.15"
+from runtime_paths import configured_path
+
+carla_dir = str(configured_path("CARLA_ROOT"))
 carla_exe = os.path.join(carla_dir, "CarlaUE4.exe")
 
 def is_listening():
@@ -53,4 +55,3 @@ print("Current map is:", world.get_map().name)
 
 proc.terminate()
 print("Done test.")
-

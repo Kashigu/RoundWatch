@@ -18,13 +18,15 @@ from typing import Any, Dict, List, Optional, Tuple
 import cv2
 import numpy as np
 
-# Ensure SUMO and CARLA integration modules are accessible
-if "SUMO_HOME" not in os.environ:
-    os.environ["SUMO_HOME"] = r"E:\Simulation_Engines\SUMO"
+from scripts.runtime_paths import configure_sumo_environment, configured_path
 
-sumo_bridge_dir = r"E:\Simulation_Engines\CARLA_0.9.15\Co-Simulation\Sumo"
-if sumo_bridge_dir not in sys.path:
-    sys.path.insert(0, sumo_bridge_dir)
+# Ensure SUMO and CARLA integration modules are accessible
+sumo_home = configure_sumo_environment()
+carla_root = configured_path("CARLA_ROOT")
+sumo_bridge_dir = carla_root / "Co-Simulation" / "Sumo"
+for module_dir in (str(sumo_bridge_dir), str(sumo_home / "tools")):
+    if module_dir not in sys.path:
+        sys.path.insert(0, module_dir)
 sys.path.insert(0, os.path.abspath("."))
 
 import carla

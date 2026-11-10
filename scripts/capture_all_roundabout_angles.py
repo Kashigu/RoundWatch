@@ -7,7 +7,9 @@ from pathlib import Path
 import numpy as np
 import cv2
 
-carla_dir = r"E:\Simulation_Engines\CARLA_0.9.15"
+from runtime_paths import artifact_directory, configured_path
+
+carla_dir = str(configured_path("CARLA_ROOT"))
 carla_exe = os.path.join(carla_dir, "CarlaUE4.exe")
 
 def is_listening():
@@ -138,7 +140,7 @@ cam_bp.set_attribute("fov", "85.0")
 
 output_dir = Path("data/angles")
 output_dir.mkdir(parents=True, exist_ok=True)
-artifact_dir = Path(r"C:\Users\orlan\.gemini\antigravity\brain\dc5e9231-1ac9-4f55-b832-205cbb1301e5")
+artifact_dir = artifact_directory()
 
 for item in angles:
     cam_trans = carla.Transform(
@@ -183,4 +185,3 @@ world.apply_settings(settings)
 # Clean close CARLA
 proc.terminate()
 print("All 6 angles captured successfully and CARLA closed cleanly!")
-

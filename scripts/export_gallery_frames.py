@@ -7,6 +7,8 @@ import sys
 
 sys.path.insert(0, os.path.abspath("."))
 
+from runtime_paths import artifact_directory
+
 from src.compliance.geometry import RoundaboutGeometry
 from src.perception.homography import RoadwayHomography
 from src.visualization.ar_overlay import AROverlayEngine
@@ -44,7 +46,7 @@ frames_to_export = [
     (750, None, "step_06_frame_750_exit.png"),
 ]
 
-artifact_dir = r"C:\Users\orlan\.gemini\antigravity\brain\dc5e9231-1ac9-4f55-b832-205cbb1301e5"
+artifact_dir = str(artifact_directory())
 
 for f_idx, sel_id, filename in frames_to_export:
     cap.set(cv2.CAP_PROP_POS_FRAMES, f_idx)
@@ -80,4 +82,3 @@ for f_idx, sel_id, filename in frames_to_export:
 
 cap.release()
 print("All key frames exported!")
-

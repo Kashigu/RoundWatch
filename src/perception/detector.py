@@ -8,14 +8,48 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
+import warnings
 
 import cv2
 import numpy as np
 
 try:
     from ultralytics import YOLO
+    import torch
 except ImportError:
     YOLO = None
+    torch = None
+
+
+def _resolve_device(device: str) -> str:
+    """Fall back to CPU when the requested CUDA device is unavailable."""
+    cuda_requested = device.startswith("cuda") or device.isdigit()
+    if not cuda_requested:
+        return device
+
+    if torch is None or not torch.cuda.is_available():
+        warnings.warn(
+            f"CUDA device {device!r} was requested but CUDA is unavailable; using CPU.",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+        return "cpu"
+
+    if device.startswith("cuda:"):
+        try:
+            device_index = int(device.partition(":")[2])
+        except ValueError:
+            return device
+        if device_index >= torch.cuda.device_count():
+            warnings.warn(
+                f"CUDA device {device!r} was requested but only "
+                f"{torch.cuda.device_count()} device(s) are available; using CPU.",
+                RuntimeWarning,
+                stacklevel=2,
+            )
+            return "cpu"
+
+    return device
 
 
 class VehicleDetector:
@@ -38,7 +72,7 @@ class VehicleDetector:
     ) -> None:
         self.confidence_thresh = confidence_thresh
         self.iou_thresh = iou_thresh
-        self.device = device
+        self.device = _resolve_device(device)
         self.model_name = model_name
 
         if YOLO is not None:
@@ -102,4 +136,3 @@ class VehicleDetector:
             })
 
         return detections
-
