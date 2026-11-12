@@ -37,6 +37,7 @@ from sumo_integration.constants import INVALID_ACTOR_ID
 from sumo_integration.sumo_simulation import SumoSimulation
 
 from src.simulation.camera_rig import CameraRig
+from src.simulation.instance_labels import match_vehicle_instances, vehicle_instance_map
 
 
 class CarlaSumoCoSimulationRecorder:
@@ -50,7 +51,19 @@ class CarlaSumoCoSimulationRecorder:
         fps: int = 20,
         camera_height: float = 12.0,
         output_dir: str = "data/recordings",
+        instance_labels: bool = True,
+        save_instance_masks: bool = False,
+        min_visible_pixels: int = 25,
     ) -> None:
+        """
+        Args:
+            instance_labels: Derive each label box from an instance-segmentation
+                camera mounted alongside each RGB camera (visible, occlusion-aware
+                boxes). When False, the projected 3D-box hull is used as before.
+            save_instance_masks: Also write the raw instance-segmentation frames
+                as lossless PNGs, so labels can be re-derived later.
+            min_visible_pixels: Vehicles with fewer visible pixels get no label.
+        """
         self.sumo_cfg = os.path.abspath(sumo_cfg)
         self.carla_host = carla_host
         self.carla_port = carla_port
@@ -59,6 +72,10 @@ class CarlaSumoCoSimulationRecorder:
         self.camera_height = camera_height
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
+        self.instance_labels = instance_labels
+        self.save_instance_masks = save_instance_masks and instance_labels
+        self.min_visible_pixels = min_visible_pixels
+        self.frame_timeout = 10.0  # seconds to wait for a tick's camera images
 
         self.carla_sim: Optional[CarlaSimulation] = None
         self.sumo_sim: Optional[SumoSimulation] = None
@@ -119,10 +136,18 @@ class CarlaSumoCoSimulationRecorder:
         cam_rot_north = (-28.0, -80.0, 0.0)
 
         self.camera_rig_south = CameraRig(self.world, image_size=(1920, 1080), fov=90.0)
-        self.camera_rig_south.spawn_camera(cam_pos_south, cam_rot_south)
+        # sensor_tick=0: render on every synchronous world tick. Matching the
+        # world's 0.05 s delta instead makes sensors skip ticks at random.
+        self.camera_rig_south.spawn_camera(
+            cam_pos_south, cam_rot_south,
+            with_instance_segmentation=self.instance_labels, sensor_tick=0.0,
+        )
 
         self.camera_rig_north = CameraRig(self.world, image_size=(1920, 1080), fov=90.0)
-        self.camera_rig_north.spawn_camera(cam_pos_north, cam_rot_north)
+        self.camera_rig_north.spawn_camera(
+            cam_pos_north, cam_rot_north,
+            with_instance_segmentation=self.instance_labels, sensor_tick=0.0,
+        )
 
         self.camera_rig = self.camera_rig_south
         print(f"[Co-Simulation] Mounted Dual Lamp Pole Cameras at {self.camera_height}m (South & North)")
@@ -146,6 +171,13 @@ class CarlaSumoCoSimulationRecorder:
         print(f"[Co-Simulation] Recording {total_steps} frames ({duration_sec}s) at {self.fps} FPS...")
         t0 = time.time()
 
+        stats = {"rgb_fallback": 0, "seg_missing": 0, "labels": 0, "hidden": 0, "id_agree": 0}
+        mask_dirs: Dict[str, Path] = {}
+        if self.save_instance_masks:
+            for cam in ("south", "north"):
+                mask_dirs[cam] = self.output_dir / f"instance_{cam}"
+                mask_dirs[cam].mkdir(parents=True, exist_ok=True)
+
         for step in range(total_steps):
             timestamp = step * self.dt
 
@@ -154,8 +186,35 @@ class CarlaSumoCoSimulationRecorder:
 
             # 2. Advance CARLA simulation synchronously
             self.carla_sim.tick()
+            sim_frame = self.world.get_snapshot().frame
 
-            # 3. Synchronize SUMO vehicles to CARLA actors
+            # 3. Fetch the camera images rendered at exactly this tick
+            frame_s, seg_s = self._fetch_frames(self.camera_rig_south, sim_frame, stats)
+            frame_n, seg_n = self._fetch_frames(self.camera_rig_north, sim_frame, stats)
+
+            if frame_s is not None and frame_n is not None:
+                writer_south.write(frame_s)
+                writer_north.write(frame_n)
+
+                s_pane = cv2.resize(frame_s, (1280, 720))
+                n_pane = cv2.resize(frame_n, (1280, 720))
+                comp_frame = np.hstack([s_pane, n_pane])
+                writer_comp.write(comp_frame)
+            elif frame_s is not None:
+                writer_south.write(frame_s)
+            elif frame_n is not None:
+                writer_north.write(frame_n)
+
+            for cam, seg in (("south", seg_s), ("north", seg_n)):
+                if cam in mask_dirs and seg is not None:
+                    cv2.imwrite(str(mask_dirs[cam] / f"frame_{step:06d}.png"), seg[:, :, :3])
+
+            # 4. Ground truth for the same tick as the images above
+            gt_records.extend(
+                self._ground_truth_for_tick(step, timestamp, {"south": seg_s, "north": seg_n}, stats)
+            )
+
+            # 5. Synchronize SUMO vehicles to CARLA actors (takes effect next tick)
             sumo_spawned = self.sumo_sim.spawned_actors - set(self.sumo2carla_ids.keys())
             for s_id in sumo_spawned:
                 self.sumo_sim.subscribe(s_id)
@@ -182,56 +241,14 @@ class CarlaSumoCoSimulationRecorder:
                 c_trans = BridgeHelper.get_carla_transform(s_actor.transform, s_actor.extent)
                 self.carla_sim.synchronize_vehicle(c_id, c_trans, None)
 
-            # 4. Fetch synchronized camera frames
-            frame_s = self.camera_rig_south.latest_frame if self.camera_rig_south else None
-            frame_n = self.camera_rig_north.latest_frame if self.camera_rig_north else None
-
-            if frame_s is not None and frame_n is not None:
-                writer_south.write(frame_s)
-                writer_north.write(frame_n)
-
-                s_pane = cv2.resize(frame_s, (1280, 720))
-                n_pane = cv2.resize(frame_n, (1280, 720))
-                comp_frame = np.hstack([s_pane, n_pane])
-                writer_comp.write(comp_frame)
-            elif frame_s is not None:
-                writer_south.write(frame_s)
-            elif frame_n is not None:
-                writer_north.write(frame_n)
-
-            # 5. Extract ground-truth bounding boxes for all active vehicles
-            for s_id, cid in self.sumo2carla_ids.items():
-                v_actor = self.carla_sim.get_actor(cid)
-                if v_actor is None or not v_actor.is_alive:
-                    continue
-
-                bbox_s = self.camera_rig_south.compute_2d_bounding_box(v_actor) if self.camera_rig_south else None
-                bbox_n = self.camera_rig_north.compute_2d_bounding_box(v_actor) if self.camera_rig_north else None
-
-                if bbox_s is not None or bbox_n is not None:
-                    loc = v_actor.get_location()
-                    vel = v_actor.get_velocity()
-                    speed_kmh = 3.6 * math.hypot(vel.x, vel.y, vel.z)
-
-                    gt_records.append({
-                        "frame_idx": step,
-                        "timestamp": round(timestamp, 3),
-                        "vehicle_id": cid,
-                        "sumo_id": s_id,
-                        "type": v_actor.type_id,
-                        "x": round(loc.x, 3),
-                        "y": round(loc.y, 3),
-                        "z": round(loc.z, 3),
-                        "speed_kmh": round(speed_kmh, 1),
-                        "bbox_south": bbox_s,
-                        "bbox_north": bbox_n,
-                        "bbox": bbox_s or bbox_n,
-                    })
-
             if step % 50 == 0:
                 elapsed = time.time() - t0
                 cur_rate = step / elapsed if elapsed > 0 else 0
-                print(f"  Tick {step:3d}/{total_steps} | Active Co-Sim Cars: {len(self.sumo2carla_ids):2d} | Speed: {cur_rate:.1f} FPS")
+                print(
+                    f"  Tick {step:3d}/{total_steps} | Active Co-Sim Cars: {len(self.sumo2carla_ids):2d}"
+                    f" | Speed: {cur_rate:.1f} FPS | Missing frames: rgb {stats['rgb_fallback']}"
+                    f", seg {stats['seg_missing']}"
+                )
 
         writer_comp.release()
         writer_south.release()
@@ -248,8 +265,124 @@ class CarlaSumoCoSimulationRecorder:
         print(f"Recorded South Camera: {video_south_path}")
         print(f"Recorded North Camera: {video_north_path}")
         print(f"Ground-Truth Log:      {json_path} ({len(gt_records)} bounding box entries)")
+        if stats["rgb_fallback"]:
+            print(f"WARNING: {stats['rgb_fallback']} camera frames were not delivered for their tick; "
+                  "the latest available frame was written instead.")
+        if self.instance_labels:
+            print(f"Instance labels:       {stats['labels']} visible boxes, "
+                  f"{stats['hidden']} projected-but-hidden vehicles skipped")
+            if stats["seg_missing"]:
+                print(f"WARNING: {stats['seg_missing']} segmentation frames missing; "
+                      "projected boxes were used for those ticks.")
+            if stats["labels"]:
+                agree = 100.0 * stats["id_agree"] / stats["labels"]
+                print(f"Instance ID == actor ID for {agree:.0f}% of matched labels "
+                      "(diagnostic only; matching uses box overlap)")
         print("=" * 60)
         return video_path, json_path
+
+    def _fetch_frames(
+        self, rig: Optional[CameraRig], sim_frame: int, stats: Dict[str, int]
+    ) -> Tuple[Optional[np.ndarray], Optional[np.ndarray]]:
+        """RGB and instance-segmentation images rendered at ``sim_frame``."""
+        if rig is None:
+            return None, None
+        # Generous timeout: the first spawn of a new vehicle model can stall
+        # rendering for a few seconds while CARLA loads its assets.
+        frame = rig.wait_for_frame(sim_frame, timeout=self.frame_timeout)
+        if frame is None:
+            stats["rgb_fallback"] += 1
+            frame = rig.latest_frame
+        seg = None
+        if self.instance_labels:
+            seg = rig.wait_for_instance_frame(sim_frame, timeout=self.frame_timeout)
+            if seg is None:
+                stats["seg_missing"] += 1
+        return frame, seg
+
+    def _ground_truth_for_tick(
+        self,
+        step: int,
+        timestamp: float,
+        segs: Dict[str, Optional[np.ndarray]],
+        stats: Dict[str, int],
+    ) -> List[Dict[str, Any]]:
+        """Label boxes for every live vehicle in both cameras for one tick."""
+        actors = {}
+        for s_id, cid in self.sumo2carla_ids.items():
+            v_actor = self.carla_sim.get_actor(cid)
+            if v_actor is not None and v_actor.is_alive:
+                actors[cid] = (s_id, v_actor)
+
+        rigs = {"south": self.camera_rig_south, "north": self.camera_rig_north}
+        projected: Dict[str, Dict[int, Any]] = {}
+        labels: Dict[str, Dict[int, Any]] = {}
+        visible: Dict[str, Dict[int, int]] = {}
+        source: Dict[str, str] = {}
+        for cam, rig in rigs.items():
+            projected[cam] = {
+                cid: (rig.compute_2d_bounding_box(actor, min_size=0) if rig else None)
+                for cid, (_, actor) in actors.items()
+            }
+            seg = segs.get(cam)
+            if self.instance_labels and seg is not None:
+                matched = match_vehicle_instances(
+                    vehicle_instance_map(seg),
+                    projected[cam],
+                    min_visible_pixels=self.min_visible_pixels,
+                )
+                labels[cam] = {cid: list(m.bbox) for cid, m in matched.items()}
+                visible[cam] = {cid: m.visible_pixels for cid, m in matched.items()}
+                source[cam] = "instance_segmentation"
+                stats["labels"] += len(matched)
+                stats["hidden"] += sum(
+                    1 for cid, box in projected[cam].items() if box is not None and cid not in matched
+                )
+                stats["id_agree"] += sum(
+                    1 for cid, m in matched.items() if m.instance_id == (cid & 0xFFFF)
+                )
+            else:
+                # Legacy behaviour: projected 3D-box hull, at least 10 px each side.
+                labels[cam] = {
+                    cid: list(box)
+                    for cid, box in projected[cam].items()
+                    if box is not None and box[2] - box[0] >= 10 and box[3] - box[1] >= 10
+                }
+                visible[cam] = {}
+                source[cam] = "projected"
+
+        records = []
+        for cid, (s_id, v_actor) in actors.items():
+            bbox_s = labels["south"].get(cid)
+            bbox_n = labels["north"].get(cid)
+            if bbox_s is None and bbox_n is None:
+                continue
+            loc = v_actor.get_location()
+            vel = v_actor.get_velocity()
+            speed_kmh = 3.6 * math.hypot(vel.x, vel.y, vel.z)
+            proj_s = projected["south"].get(cid)
+            proj_n = projected["north"].get(cid)
+            records.append({
+                "frame_idx": step,
+                "timestamp": round(timestamp, 3),
+                "vehicle_id": cid,
+                "sumo_id": s_id,
+                "type": v_actor.type_id,
+                "x": round(loc.x, 3),
+                "y": round(loc.y, 3),
+                "z": round(loc.z, 3),
+                "speed_kmh": round(speed_kmh, 1),
+                "bbox_south": bbox_s,
+                "bbox_north": bbox_n,
+                "bbox": bbox_s or bbox_n,
+                "bbox_south_projected": list(proj_s) if proj_s else None,
+                "bbox_north_projected": list(proj_n) if proj_n else None,
+                "visible_px_south": visible["south"].get(cid),
+                "visible_px_north": visible["north"].get(cid),
+                "label_source_south": source["south"],
+                "label_source_north": source["north"],
+            })
+        return records
 
     def cleanup(self) -> None:
         """Clean up simulator actors and close TraCI / CARLA sessions."""
@@ -264,6 +397,15 @@ class CarlaSumoCoSimulationRecorder:
                 self.camera_rig_north.destroy()
             except Exception:
                 pass
+
+        # The SUMO bridge's close() leaves its vehicles in the CARLA world.
+        if self.carla_sim is not None:
+            for c_id in list(self.sumo2carla_ids.values()):
+                try:
+                    self.carla_sim.destroy_actor(c_id)
+                except Exception:
+                    pass
+            self.sumo2carla_ids.clear()
 
         if self.carla_sim is not None:
             try:

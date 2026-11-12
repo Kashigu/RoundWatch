@@ -222,8 +222,15 @@ yolo val model=yolov8s.pt data=data/yolo_benchmark/fps/val_5fps/dataset.yaml img
 
 **Result files**
 
-- Section 1–2 runs: `runs/detect/bench_1fps_*`; numbers in
-  `runs/detect/bench_1fps_summary_{640,1920}.json`
-- Section 3 runs: `runs/detect/fps_sweep/*`; numbers in
-  `runs/detect/fps_sweep/summary.json`
-- The original run being re-assessed: `runs/detect/val` (`yolov8n`, raw labels, 1920 px)
+The numbers behind every table are committed in `docs/benchmark_results/`:
+
+- Sections 1–2: `original_recording/labels_and_imgsz_{640,1920}.json`
+- Section 3: `original_recording/fps_sweep.json`
+
+Plots and per-image predictions are written to `runs/` when a benchmark runs;
+that folder is not committed.
+
+Later results with exact instance-segmentation labels (recording
+`clear_noon_02`, YOLOv8 and YOLO11) are in `clear_noon_02/` in the same folder:
+`models_by_fps.md` (four models at 1 and 5 fps) and `imgsz_sweep_5fps.md`
+(640–2560 px).

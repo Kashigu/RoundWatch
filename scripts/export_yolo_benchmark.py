@@ -169,7 +169,7 @@ def export_dataset(
     output_dir: Path,
     sample_every: int = 20,
     camera: str = "south",
-    refine: bool = True,
+    refine: bool | None = None,
     sample_fps: float | None = None,
 ) -> int:
     """Write sampled frames and matching YOLO labels; return image count.
@@ -177,7 +177,10 @@ def export_dataset(
     Frames are taken every ``sample_every`` frames, or at ``sample_fps``
     frames per second of video when given. With ``refine`` the projected boxes
     are fitted to the visible vehicle pixels (background subtraction) and
-    fully occluded vehicles are dropped.
+    fully occluded vehicles are dropped. ``refine=None`` (default) decides per
+    label: boxes from the instance-segmentation camera are already exact and
+    used as-is; projected 3D boxes (older recordings, or ticks where the
+    segmentation image was missing) are refined.
     """
     if sample_every < 1:
         raise ValueError("sample_every must be positive")
@@ -191,7 +194,24 @@ def export_dataset(
         frame_idx = int(record["frame_idx"])
         records_by_frame.setdefault(frame_idx, []).append(record)
 
-    background = estimate_background(video_path) if refine else None
+    source_key = f"label_source_{camera}"
+
+    def needs_refine(record: dict[str, Any]) -> bool:
+        if refine is not None:
+            return refine
+        return record.get(source_key) != "instance_segmentation"
+
+    labelled_records = [r for r in records if r.get(f"bbox_{camera}") is not None]
+    n_refine = sum(1 for r in labelled_records if needs_refine(r))
+    if refine is None:
+        n_exact = len(labelled_records) - n_refine
+        print(
+            f"{n_exact} {camera} labels from instance segmentation (used as-is), "
+            f"{n_refine} projected boxes (refined against visible pixels)"
+        )
+        if n_exact and n_refine > 0.05 * len(labelled_records):
+            print("WARNING: many ticks lacked segmentation images; consider re-recording.")
+    background = estimate_background(video_path) if n_refine else None
     dropped = 0
     labelled = 0
 
@@ -234,7 +254,7 @@ def export_dataset(
                     bbox = record.get(bbox_key)
                     if bbox is None:
                         continue
-                    if mask is not None:
+                    if mask is not None and needs_refine(record):
                         bbox = refine_bbox(mask, bbox)
                         if bbox is None:
                             dropped += 1
@@ -269,8 +289,8 @@ def export_dataset(
         encoding="utf-8",
     )
     print(f"Exported {exported} images with {labelled} labels to {output_dir}")
-    if refine:
-        print(f"Dropped {dropped} labels with no visible vehicle pixels (occluded)")
+    if n_refine:
+        print(f"Dropped {dropped} refined labels with no visible vehicle pixels (occluded)")
     print(f"Dataset config: {dataset_yaml}")
     return exported
 
@@ -288,11 +308,20 @@ def main() -> None:
         help="Sample this many frames per second of video (overrides --sample-every)",
     )
     parser.add_argument("--camera", choices=("south", "north"), default="south")
-    parser.add_argument(
+    refine_group = parser.add_mutually_exclusive_group()
+    refine_group.add_argument(
         "--no-refine",
-        action="store_true",
-        help="Keep raw projected simulator boxes instead of fitting them to visible pixels",
+        dest="refine",
+        action="store_false",
+        help="Keep the recorded boxes exactly as they are",
     )
+    refine_group.add_argument(
+        "--refine",
+        dest="refine",
+        action="store_true",
+        help="Always fit boxes to visible pixels (default: only for projected-box recordings)",
+    )
+    parser.set_defaults(refine=None)
     args = parser.parse_args()
 
     export_dataset(
@@ -301,7 +330,7 @@ def main() -> None:
         args.output_dir,
         sample_every=args.sample_every,
         camera=args.camera,
-        refine=not args.no_refine,
+        refine=args.refine,
         sample_fps=args.fps,
     )
 

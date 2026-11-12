@@ -81,3 +81,51 @@ def test_sampled_frame_indices_handles_non_divisor_rates():
     assert picked == [0, 7, 14, 20, 27, 34]
     assert sorted(sampled_frame_indices(40, 20, 1)) == [0, 20]
     assert len(sampled_frame_indices(1200, 20, 20)) == 1200
+
+
+def test_export_uses_instance_segmentation_labels_as_is(tmp_path):
+    video_path = tmp_path / "input.mp4"
+    writer = cv2.VideoWriter(str(video_path), cv2.VideoWriter_fourcc(*"mp4v"), 20, (100, 100))
+    writer.write(np.zeros((100, 100, 3), dtype=np.uint8))
+    writer.release()
+    ground_truth_path = tmp_path / "ground_truth.json"
+    ground_truth_path.write_text(
+        json.dumps([{
+            "frame_idx": 0,
+            "type": "vehicle.audi.tt",
+            "bbox_south": [10, 20, 50, 80],
+            "label_source_south": "instance_segmentation",
+        }]),
+        encoding="utf-8",
+    )
+    output_dir = tmp_path / "dataset"
+    # Default (auto) must not run background refinement, which would drop this
+    # label because the synthetic video has no visible vehicle.
+    export_dataset(video_path, ground_truth_path, output_dir, sample_every=1)
+    assert (output_dir / "labels" / "frame_000000.txt").read_text(
+        encoding="utf-8"
+    ) == "2 0.300000 0.500000 0.400000 0.600000\n"
+
+
+def test_export_refines_only_projected_labels_in_mixed_recording(tmp_path):
+    video_path = tmp_path / "input.mp4"
+    writer = cv2.VideoWriter(str(video_path), cv2.VideoWriter_fourcc(*"mp4v"), 20, (100, 100))
+    writer.write(np.zeros((100, 100, 3), dtype=np.uint8))
+    writer.release()
+    ground_truth_path = tmp_path / "ground_truth.json"
+    ground_truth_path.write_text(
+        json.dumps([
+            {"frame_idx": 0, "type": "vehicle.audi.tt", "bbox_south": [10, 20, 50, 80],
+             "label_source_south": "instance_segmentation"},
+            # Projected box on a tick without segmentation: refined, and since the
+            # synthetic video shows no vehicle, dropped as not visible.
+            {"frame_idx": 0, "type": "vehicle.audi.tt", "bbox_south": [60, 20, 90, 80],
+             "label_source_south": "projected"},
+        ]),
+        encoding="utf-8",
+    )
+    output_dir = tmp_path / "dataset"
+    export_dataset(video_path, ground_truth_path, output_dir, sample_every=1)
+    assert (output_dir / "labels" / "frame_000000.txt").read_text(
+        encoding="utf-8"
+    ) == "2 0.300000 0.500000 0.400000 0.600000\n"
