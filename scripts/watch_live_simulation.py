@@ -38,6 +38,7 @@ from src.perception.detector import VehicleDetector
 from src.perception.homography import RoadwayHomography
 from src.perception.tracker import DynamicMultiCameraTracker
 from src.simulation.camera_rig import CameraRig
+from src.simulation.maps import dress_world, get_map, load_carla_world, load_homographies
 from src.visualization.ar_overlay import AROverlayEngine
 
 
@@ -80,10 +81,12 @@ def ensure_carla_running() -> None:
 
 
 def run_live_watch(
-    sumo_cfg: str = "data/sumo/roundabout.sumocfg",
+    map_name: str = "town03",
     fps: int = 20,
 ) -> None:
     dt = 1.0 / fps
+    spec = get_map(map_name)
+    sumo_cfg = spec.sumo_cfg
     print("=" * 65)
     print("STARTING LIVE CARLA + SUMO ROUNDABOUT MONITOR")
     print("=" * 65)
@@ -91,17 +94,17 @@ def run_live_watch(
     ensure_carla_running()
 
     # 1. Connect to CARLA
-    print("[Live Monitor] Connecting to CARLA Town03...")
+    print(f"[Live Monitor] Connecting to CARLA - map '{spec.name}': {spec.description}")
     init_client = carla.Client("127.0.0.1", 2000)
     init_client.set_timeout(60.0)
-    curr_map = init_client.get_world().get_map().name
-    if "Town03" not in curr_map:
-        print(f"[Live Monitor] Current map is {curr_map}. Loading Town03_Opt...")
-        init_client.load_world("Town03_Opt")
-        time.sleep(3.0)
+    load_carla_world(init_client, spec)
+    time.sleep(3.0)
 
     carla_sim = CarlaSimulation("127.0.0.1", 2000, dt)
     world = carla_sim.world
+    scenery = dress_world(init_client, world, spec)
+    if scenery is not None:
+        print(f"[scenery] {len(scenery.actors)} props spawned (buildings, markings, islands)")
 
     # Strictly purge any orphan/stale vehicles from previous runs
     print("[Live Monitor] Purging any stale vehicles from CARLA world...")
@@ -130,13 +133,9 @@ def run_live_watch(
     BridgeHelper.blueprint_library = world.get_blueprint_library()
     BridgeHelper.offset = sumo_sim.get_net_offset()
 
-    # 3. Mount Dual Cameras on Physical Highway Light Poles (South & North)
-    # South pole on entrance splitter island (0.71, -26.2, 11.5), North pole on exit splitter island (-2.31, 27.2, 11.5)
-    cam_pos_south = (0.71, -26.2, 11.5)
-    cam_rot_south = (-28.0, 88.0, 0.0)
-
-    cam_pos_north = (-2.31, 27.2, 11.5)
-    cam_rot_north = (-28.0, -80.0, 0.0)
+    # 3. Mount Dual Cameras (South & North poles, poses defined per map in src/simulation/maps.py)
+    cam_pos_south, cam_rot_south = spec.cam_south.position, spec.cam_south.rotation
+    cam_pos_north, cam_rot_north = spec.cam_north.position, spec.cam_north.rotation
 
     camera_rig_south = CameraRig(world, image_size=(1280, 720), fov=90.0)
     camera_rig_south.spawn_camera(cam_pos_south, cam_rot_south)
@@ -145,33 +144,19 @@ def run_live_watch(
     camera_rig_north.spawn_camera(cam_pos_north, cam_rot_north)
 
     # 4. Perception & Unified Dual-Camera Tracking Engine
-    detector = VehicleDetector(model_name="yolov8n.pt", confidence_thresh=0.25, device="cuda:0")
+    # YOLO + BoT-SORT per camera (one instance each: BoT-SORT state is per stream)
+    detector_s = VehicleDetector(model_name="yolov8n.pt", confidence_thresh=0.25, device="cuda:0")
+    detector_n = VehicleDetector(model_name="yolov8n.pt", confidence_thresh=0.25, device="cuda:0")
     tracker = DynamicMultiCameraTracker(
         cam_pos_south, cam_rot_south,
         cam_pos_north, cam_rot_north,
         max_age_frames=40,
         min_hits=2,
+        roi_center=spec.tracking_roi[0],
+        roi_radius=spec.tracking_roi[1],
     )
-    geom = RoundaboutGeometry()
-
-    homography_south = RoadwayHomography()
-    homography_north = RoadwayHomography()
-
-    if Path("configs/homography_town03.json").exists():
-        import json
-        with open("configs/homography_town03.json") as f:
-            cfg = json.load(f)
-        if "cameras_720" in cfg:
-            s_cfg = cfg["cameras_720"]["cam_south"]
-            n_cfg = cfg["cameras_720"]["cam_north"]
-            homography_south.H = np.array(s_cfg["H_matrix"], dtype=np.float64)
-            homography_south.H_inv = np.array(s_cfg["H_inv_matrix"], dtype=np.float64)
-            homography_north.H = np.array(n_cfg["H_matrix"], dtype=np.float64)
-            homography_north.H_inv = np.array(n_cfg["H_inv_matrix"], dtype=np.float64)
-        else:
-            homography_south.H = np.array(cfg["H_matrix"], dtype=np.float64)
-            homography_south.H_inv = np.array(cfg["H_inv_matrix"], dtype=np.float64)
-            homography_north = homography_south
+    geom = RoundaboutGeometry(**spec.geometry)
+    homography_south, homography_north = load_homographies(spec)
 
     classifier = TrajectoryClassifier(model_path="models/compliance_mlp.pt", geometry=geom)
     ar_engine_south = AROverlayEngine(geometry=geom, homography=homography_south)
@@ -261,15 +246,14 @@ def run_live_watch(
             pane_w = frame_s.shape[1]
             height = frame_s.shape[0]
 
-            # 1. Independent High-Res YOLO Detection per camera
-            dets_s = detector.detect(frame_s)
-            dets_n = detector.detect(frame_n)
+            # 1. YOLO detection + BoT-SORT tracking per camera
+            tracks_s_local = detector_s.track(frame_s)
+            tracks_n_local = detector_n.track(frame_n)
 
-            # 2. 3D World Road-Plane Fusion & Dynamic Multi-Camera Tracking
-            # Car IDs are unified and identical across both cameras
+            # 2. Road-plane fusion of the per-camera BoT-SORT IDs into one global ID per vehicle
             active_tracks = tracker.update(
-                dets_s=dets_s,
-                dets_n=dets_n,
+                tracks_s=tracks_s_local,
+                tracks_n=tracks_n_local,
                 frame_idx=step,
                 dt=dt,
                 pane_w=pane_w,
@@ -383,4 +367,12 @@ def run_live_watch(
 
 
 if __name__ == "__main__":
-    run_live_watch()
+    import argparse
+
+    from src.simulation.maps import MAPS
+
+    parser = argparse.ArgumentParser(description="Live CARLA + SUMO roundabout monitor")
+    parser.add_argument("--map", default="town03", choices=sorted(MAPS), help="roundabout scenario to co-simulate")
+    parser.add_argument("--fps", type=int, default=20)
+    args = parser.parse_args()
+    run_live_watch(map_name=args.map, fps=args.fps)

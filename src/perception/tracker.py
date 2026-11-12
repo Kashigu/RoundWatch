@@ -1,238 +1,110 @@
-"""Multi-Object Tracking (MOT) Engine based on BoT-SORT for RoundWatch.
+"""Multi-Object Tracking (MOT) for RoundWatch, built on the official BoT-SORT tracker.
 
-Maintains persistent vehicle identities across dense traffic and large vehicle
-occlusions using Kalman filter state estimation, Camera Motion Compensation (CMC),
-and trajectory history accumulation buffers.
+Per-camera tracking uses the Ultralytics BoT-SORT implementation (Kalman filter, two-stage
+BYTE association, GMC camera-motion compensation and optional ReID):
+  - ``VehicleDetector.track()`` runs YOLO + BoT-SORT in one step with native ReID features
+    (the main path used by the pipeline and the live monitor).
+  - ``BoTSORTTracker`` feeds pre-computed detections from any source into BoT-SORT.
+
+``DynamicMultiCameraTracker`` sits on top of the two per-camera BoT-SORT streams (South and
+North) and fuses their local track IDs into one global vehicle ID in road coordinates, so a
+vehicle keeps its ID across cameras and through the central-island occlusion.
 """
 
 from __future__ import annotations
 
 import math
-from typing import Any, Dict, List, Optional, Tuple
-import cv2
+from typing import Any, Dict, List, Optional, Sequence, Tuple
+
 import numpy as np
+import yaml
+
+from ultralytics.trackers.bot_sort import BOTSORT
+from ultralytics.utils import IterableSimpleNamespace
+
+DEFAULT_BOTSORT_CFG = "configs/botsort.yaml"
+
+VEHICLE_CLASSES = {2: "car", 3: "motorcycle", 5: "bus", 7: "truck"}
 
 
-class KalmanBoxTracker:
-    """Kalman filter for tracking single bounding box [x1, y1, x2, y2]."""
+class _DetectionArray:
+    """Minimal NumPy-backed stand-in for Ultralytics ``Boxes`` (what BoT-SORT's ``update`` expects)."""
 
-    count = 0
+    def __init__(self, xyxy: np.ndarray, conf: np.ndarray, cls: np.ndarray) -> None:
+        self.xyxy = xyxy.reshape(-1, 4).astype(np.float32)
+        self.conf = conf.reshape(-1).astype(np.float32)
+        self.cls = cls.reshape(-1).astype(np.float32)
 
-    def __init__(self, bbox: Tuple[int, int, int, int], class_id: int, conf: float) -> None:
-        KalmanBoxTracker.count += 1
-        self.id = KalmanBoxTracker.count
-        self.class_id = class_id
-        self.conf = conf
-        self.time_since_update = 0
-        self.history: List[Tuple[float, float, float]] = []  # (x_center, y_bottom, timestamp)
-        self.hits = 1
-        self.hit_streak = 1
-        self.age = 0
+    @property
+    def xywh(self) -> np.ndarray:
+        out = self.xyxy.copy()
+        out[:, 2] = self.xyxy[:, 2] - self.xyxy[:, 0]
+        out[:, 3] = self.xyxy[:, 3] - self.xyxy[:, 1]
+        out[:, 0] = self.xyxy[:, 0] + out[:, 2] / 2.0
+        out[:, 1] = self.xyxy[:, 1] + out[:, 3] / 2.0
+        return out
 
-        # State: [center_x, center_y, scale (area), aspect_ratio, vx, vy, vscale]
-        # Using OpenCV KalmanFilter
-        self.kf = cv2.KalmanFilter(7, 4)
-        self.kf.transitionMatrix = np.array([
-            [1, 0, 0, 0, 1, 0, 0],
-            [0, 1, 0, 0, 0, 1, 0],
-            [0, 0, 1, 0, 0, 0, 1],
-            [0, 0, 0, 1, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0],
-            [0, 0, 0, 0, 0, 1, 0],
-            [0, 0, 0, 0, 0, 0, 1],
-        ], dtype=np.float32)
+    def __len__(self) -> int:
+        return len(self.conf)
 
-        self.kf.measurementMatrix = np.array([
-            [1, 0, 0, 0, 0, 0, 0],
-            [0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 1, 0, 0, 0, 0],
-            [0, 0, 0, 1, 0, 0, 0],
-        ], dtype=np.float32)
+    def __getitem__(self, idx: Any) -> "_DetectionArray":
+        return _DetectionArray(self.xyxy[idx], self.conf[idx], self.cls[idx])
 
-        self.kf.processNoiseCov = np.eye(7, dtype=np.float32) * 1e-2
-        self.kf.measurementNoiseCov = np.eye(4, dtype=np.float32) * 1e-1
-        self.kf.errorCovPost = np.eye(7, dtype=np.float32)
 
-        self.kf.statePost = self._bbox_to_z(bbox)
-        self.kf.statePre = self._bbox_to_z(bbox)
-
-        # Record initial contact point
-        x_center = (bbox[0] + bbox[2]) / 2.0
-        y_bottom = float(bbox[3])
-        self.history.append((x_center, y_bottom, 0.0))
-
-    def _bbox_to_z(self, bbox: Tuple[int, int, int, int]) -> np.ndarray:
-        w = max(1.0, float(bbox[2] - bbox[0]))
-        h = max(1.0, float(bbox[3] - bbox[1]))
-        x = float(bbox[0]) + w / 2.0
-        y = float(bbox[1]) + h / 2.0
-        s = w * h
-        r = w / h
-        return np.array([[x], [y], [s], [r], [0.0], [0.0], [0.0]], dtype=np.float32)
-
-    def _z_to_bbox(self, state: np.ndarray) -> Tuple[int, int, int, int]:
-        x = float(state[0, 0])
-        y = float(state[1, 0])
-        s = max(1.0, float(state[2, 0]))
-        r = max(0.1, float(state[3, 0]))
-        w = math.sqrt(s * r)
-        h = s / w
-        return int(x - w / 2.0), int(y - h / 2.0), int(x + w / 2.0), int(y + h / 2.0)
-
-    def predict(self) -> Tuple[int, int, int, int]:
-        # Damp velocities when tracking without measurement to prevent runaway flying boxes
-        if self.time_since_update > 0:
-            self.kf.statePost[4] *= 0.6  # vx damping
-            self.kf.statePost[5] *= 0.6  # vy damping
-            self.kf.statePost[6] *= 0.4  # vscale damping
-        pred = self.kf.predict()
-        self.age += 1
-        if self.time_since_update > 0:
-            self.hit_streak = 0
-        self.time_since_update += 1
-        return self._z_to_bbox(pred)
-
-    def update(self, bbox: Tuple[int, int, int, int], conf: float, timestamp: float) -> None:
-        self.time_since_update = 0
-        self.hits += 1
-        self.hit_streak += 1
-        self.conf = conf
-        z = self._bbox_to_z(bbox)[:4]
-        self.kf.correct(z)
-
-        # Record contact point (bottom-center)
-        x_center = (bbox[0] + bbox[2]) / 2.0
-        y_bottom = float(bbox[3])
-        self.history.append((x_center, y_bottom, timestamp))
-
-    def get_state(self) -> Tuple[int, int, int, int]:
-        return self._z_to_bbox(self.kf.statePost)
+def load_botsort_args(config_path: str = DEFAULT_BOTSORT_CFG, **overrides: Any) -> IterableSimpleNamespace:
+    """Load a BoT-SORT YAML config (Ultralytics format) and apply keyword overrides."""
+    with open(config_path, "r", encoding="utf-8") as f:
+        cfg = yaml.safe_load(f)
+    cfg.update(overrides)
+    return IterableSimpleNamespace(**cfg)
 
 
 class BoTSORTTracker:
-    """Multi-object tracker with Camera Motion Compensation (CMC) and track buffering."""
+    """Adapter that runs the official Ultralytics BoT-SORT on pre-computed detection dicts.
 
-    def __init__(
-        self,
-        max_age: int = 35,  # Frames to maintain lost tracks during occlusions
-        min_hits: int = 3,
-        iou_threshold: float = 0.30,
-    ) -> None:
-        self.max_age = max_age
-        self.min_hits = min_hits
-        self.iou_threshold = iou_threshold
-        self.trackers: List[KalmanBoxTracker] = []
-        self.prev_frame_gray: Optional[np.ndarray] = None
+    Pass the camera frame to ``update`` to enable GMC camera-motion compensation. Native ReID
+    (``model: auto``) needs YOLO backbone features, which only ``VehicleDetector.track()`` provides;
+    here ReID is active only if the config names an external ReID model.
+    """
+
+    def __init__(self, config_path: str = DEFAULT_BOTSORT_CFG, **overrides: Any) -> None:
+        args = load_botsort_args(config_path, **overrides)
+        if args.with_reid and getattr(args, "model", "auto") == "auto":
+            args.with_reid = False  # no detector features available on this path
+        self.args = args
+        self.tracker = BOTSORT(args)
 
     def update(
         self,
         detections: List[Dict[str, Any]],
-        current_frame: Optional[np.ndarray] = None,
-        timestamp: float = 0.0,
+        frame: Optional[np.ndarray] = None,
     ) -> List[Dict[str, Any]]:
-        """Process frame detections and return active confirmed tracks."""
-        # 1. Camera Motion Compensation (CMC)
-        if current_frame is not None and self.prev_frame_gray is not None:
-            gray = cv2.cvtColor(current_frame, cv2.COLOR_BGR2GRAY)
-            # Optical flow or feature-based affine transform
-            self.prev_frame_gray = gray
-        elif current_frame is not None:
-            self.prev_frame_gray = cv2.cvtColor(current_frame, cv2.COLOR_BGR2GRAY)
+        """Associate this frame's detections and return confirmed tracks with persistent ``track_id``."""
+        if detections:
+            dets = _DetectionArray(
+                np.array([d["bbox"] for d in detections], dtype=np.float32),
+                np.array([d["conf"] for d in detections], dtype=np.float32),
+                np.array([d.get("class_id", 2) for d in detections], dtype=np.float32),
+            )
+        else:
+            dets = _DetectionArray(np.zeros((0, 4)), np.zeros(0), np.zeros(0))
 
-        # 2. Predict positions of existing tracks
-        for trk in self.trackers:
-            trk.predict()
+        out = self.tracker.update(dets, frame)
+        tracks: List[Dict[str, Any]] = []
+        for row in out:
+            x1, y1, x2, y2, tid, score, cls, _idx = row[:8]
+            cls_id = int(cls)
+            tracks.append({
+                "track_id": int(tid),
+                "bbox": (int(round(x1)), int(round(y1)), int(round(x2)), int(round(y2))),
+                "class_id": cls_id,
+                "class_name": VEHICLE_CLASSES.get(cls_id, "car"),
+                "conf": round(float(score), 3),
+            })
+        return tracks
 
-        # 3. Associate detections to existing tracks via IoU
-        matched_trks, unmatched_dets, unmatched_trks = self._associate(detections)
-
-        # 4. Update matched tracks
-        for d_idx, t_idx in matched_trks:
-            det = detections[d_idx]
-            self.trackers[t_idx].update(det["bbox"], det["conf"], timestamp)
-
-        # 5. Create new tracks for unmatched high-confidence detections
-        for d_idx in unmatched_dets:
-            det = detections[d_idx]
-            if det["conf"] >= 0.35:
-                trk = KalmanBoxTracker(det["bbox"], det["class_id"], det["conf"])
-                self.trackers.append(trk)
-
-        # 6. Gather active confirmed tracks and prune stale ones
-        active_tracks: List[Dict[str, Any]] = []
-        surviving_trackers: List[KalmanBoxTracker] = []
-
-        for trk in self.trackers:
-            if trk.time_since_update < self.max_age:
-                surviving_trackers.append(trk)
-                # Only display confirmed, actively detected tracks in current frame (prevents flying ghost boxes)
-                if trk.time_since_update == 0 and (trk.hits >= self.min_hits or trk.age < 5):
-                    bbox = trk.get_state()
-                    w = bbox[2] - bbox[0]
-                    h = bbox[3] - bbox[1]
-                    if 10 <= w <= 450 and 10 <= h <= 450:
-                        active_tracks.append({
-                            "track_id": trk.id,
-                            "class_id": trk.class_id,
-                            "conf": trk.conf,
-                            "bbox": bbox,
-                            "history": list(trk.history),
-                        })
-
-        self.trackers = surviving_trackers
-        return active_tracks
-
-    def _associate(
-        self, detections: List[Dict[str, Any]]
-    ) -> Tuple[List[Tuple[int, int]], List[int], List[int]]:
-        if not self.trackers:
-            return [], list(range(len(detections))), []
-        if not detections:
-            return [], [], list(range(len(self.trackers)))
-
-        # Build IoU cost matrix
-        iou_matrix = np.zeros((len(detections), len(self.trackers)), dtype=np.float32)
-        for d_idx, det in enumerate(detections):
-            for t_idx, trk in enumerate(self.trackers):
-                iou_matrix[d_idx, t_idx] = self._iou(det["bbox"], trk.get_state())
-
-        matched_indices: List[Tuple[int, int]] = []
-        unmatched_dets = list(range(len(detections)))
-        unmatched_trks = list(range(len(self.trackers)))
-
-        # Greedy match high IoUs
-        while True:
-            max_iou = 0.0
-            best_pair = None
-            for d in unmatched_dets:
-                for t in unmatched_trks:
-                    if iou_matrix[d, t] > max_iou:
-                        max_iou = iou_matrix[d, t]
-                        best_pair = (d, t)
-
-            if max_iou >= self.iou_threshold and best_pair is not None:
-                d, t = best_pair
-                matched_indices.append((d, t))
-                unmatched_dets.remove(d)
-                unmatched_trks.remove(t)
-            else:
-                break
-
-        return matched_indices, unmatched_dets, unmatched_trks
-
-    @staticmethod
-    def _iou(bb_test: Tuple[int, int, int, int], bb_gt: Tuple[int, int, int, int]) -> float:
-        xx1 = max(bb_test[0], bb_gt[0])
-        yy1 = max(bb_test[1], bb_gt[1])
-        xx2 = min(bb_test[2], bb_gt[2])
-        yy2 = min(bb_test[3], bb_gt[3])
-        w = max(0.0, float(xx2 - xx1))
-        h = max(0.0, float(yy2 - yy1))
-        intersection = w * h
-        area1 = (bb_test[2] - bb_test[0]) * (bb_test[3] - bb_test[1])
-        area2 = (bb_gt[2] - bb_gt[0]) * (bb_gt[3] - bb_gt[1])
-        union = area1 + area2 - intersection
-        return float(intersection / union) if union > 0 else 0.0
+    def reset(self) -> None:
+        self.tracker.reset()
 
 
 def pixel_to_road_ray(
@@ -246,7 +118,7 @@ def pixel_to_road_ray(
     ground_z: float = 0.0,
 ) -> Optional[Tuple[float, float]]:
     """Project a 2D camera viewport pixel (u, v) to a 3D road coordinate (X, Y) on plane ground_z.
-    
+
     Uses exact ray-plane intersection with camera extrinsics (cam_pos, cam_rot).
     """
     focal = (w / 2.0) / math.tan(math.radians(fov / 2.0))
@@ -280,11 +152,22 @@ def pixel_to_road_ray(
 
 
 class DynamicMultiCameraTracker:
-    """Pure dynamic multi-camera tracking engine without GT or pre-defined IDs.
-    
-    Maintains persistent vehicle identities dynamically across dual cameras (South and North)
-    and central fountain occlusions by mapping video bounding boxes to road metric space.
+    """Cross-camera identity fusion on top of per-camera BoT-SORT tracks.
+
+    Input per frame: the confirmed BoT-SORT tracks of the South and North cameras, each carrying a
+    camera-local ``track_id``. Each (camera, local id) pair is bound to one global vehicle ID:
+      - a bound pair keeps its global ID (BoT-SORT already did the temporal association);
+      - a new local track is linked, by road-plane distance, to a global vehicle currently seen by
+        the other camera (same car in both views) or recently lost (camera hand-over, occlusion
+        behind the central island, or a BoT-SORT ID restart); otherwise a new vehicle is created.
+    Global IDs are assigned sequentially (1, 2, 3...) once a vehicle reaches ``min_hits`` frames.
     """
+
+    SAME_FRAME_GATE_M = 6.5     # same car seen by both cameras in the same frame
+    RECENT_LOST_GATE_M = 8.0    # re-link to a vehicle lost <= 5 frames ago
+    LONG_LOST_GATE_M = 14.0     # re-link to a vehicle lost longer (central-island occlusion)
+    MERGE_DIST_M = 2.5          # two global vehicles this close ...
+    MERGE_FRAMES = 4            # ... for this many consecutive frames are one vehicle (duplicate)
 
     def __init__(
         self,
@@ -294,200 +177,239 @@ class DynamicMultiCameraTracker:
         cam_rot_n: List[float] | Tuple[float, float, float],
         max_age_frames: int = 45,
         min_hits: int = 3,
+        roi_center: Tuple[float, float] = (2.0, 6.0),
+        roi_radius: float = 38.0,
+        ground_point: str = "box75",
+        merge_duplicates: bool = True,
     ) -> None:
-        self.cam_pos_s = cam_pos_s
-        self.cam_rot_s = cam_rot_s
-        self.cam_pos_n = cam_pos_n
-        self.cam_rot_n = cam_rot_n
+        self.cams = {
+            "south": (cam_pos_s, cam_rot_s),
+            "north": (cam_pos_n, cam_rot_n),
+        }
         self.max_age = max_age_frames
         self.min_hits = min_hits
-        self.next_id = 1
+        self.roi_center = roi_center      # vehicles are only created inside the monitored area
+        self.roi_radius = roi_radius
+        self.ground_point = ground_point
+        self.merge_duplicates = merge_duplicates
+        self.next_id = 1  # next public (confirmed) vehicle ID
 
-        self.tentative_tracks: List[Dict[str, Any]] = []
+        self._next_key = 1
+        self._vehicles: Dict[int, Dict[str, Any]] = {}       # internal key -> vehicle record
+        self._local_to_key: Dict[Tuple[str, int], int] = {}  # (camera, BoT-SORT id) -> internal key
+        self._close_pairs: Dict[Tuple[int, int], int] = {}   # (key, key) -> consecutive close frames
+
         self.confirmed_tracks: List[Dict[str, Any]] = []
         self.completed_tracks: Dict[str, Dict[str, Any]] = {}
 
     def update(
         self,
-        dets_s: List[Dict[str, Any]],
-        dets_n: List[Dict[str, Any]],
+        tracks_s: List[Dict[str, Any]],
+        tracks_n: List[Dict[str, Any]],
         frame_idx: int,
         dt: float = 0.05,
         pane_w: int = 1280,
         height: int = 720,
     ) -> List[Dict[str, Any]]:
-        # 1. Project detections to road coordinates
-        obs_s = []
-        for d in dets_s:
-            bx = d["bbox"]
-            fu, fv = (bx[0] + bx[2]) / 2.0, float(bx[3])
-            pt = pixel_to_road_ray(fu, fv, self.cam_pos_s, self.cam_rot_s, fov=90.0, w=pane_w, h=height)
-            if pt:
-                obs_s.append({"pane": "south", "bbox": bx, "road": pt, "class_name": d.get("class_name", "car"), "conf": d.get("conf", 0.8)})
+        """Fuse this frame's per-camera BoT-SORT tracks; return confirmed vehicles visible now."""
+        obs_by_key: Dict[int, Dict[str, Any]] = {}  # key -> {"south": obs, "north": obs}
 
-        obs_n = []
-        for d in dets_n:
-            bx = d["bbox"]
-            fu, fv = (bx[0] + bx[2]) / 2.0, float(bx[3])
-            pt = pixel_to_road_ray(fu, fv, self.cam_pos_n, self.cam_rot_n, fov=90.0, w=pane_w, h=height)
-            if pt:
-                obs_n.append({"pane": "north", "bbox": bx, "road": pt, "class_name": d.get("class_name", "car"), "conf": d.get("conf", 0.8)})
+        for cam, cam_tracks in (("south", tracks_s), ("north", tracks_n)):
+            cam_pos, cam_rot = self.cams[cam]
+            unbound: List[Dict[str, Any]] = []
 
-        # 2. Fuse simultaneous detections (same physical car seen in both South & North simultaneously)
-        fused_obs = []
-        used_s = set()
-        used_n = set()
-
-        for is_idx, os_item in enumerate(obs_s):
-            best_in = None
-            best_dist = float("inf")
-            for in_idx, on_item in enumerate(obs_n):
-                if in_idx in used_n:
+            for t in cam_tracks:
+                bx = t["bbox"]
+                pt = self._road_point(bx, cam_pos, cam_rot, pane_w, height)
+                if pt is None:
                     continue
-                d = math.hypot(os_item["road"][0] - on_item["road"][0], os_item["road"][1] - on_item["road"][1])
-                if d < best_dist and d < 6.5:
-                    best_dist = d
-                    best_in = in_idx
+                obs = {"cam": cam, "local_id": int(t["track_id"]), "bbox": tuple(bx), "road": pt,
+                       "class_name": t.get("class_name", "car"), "conf": float(t.get("conf", 0.8))}
+                key = self._local_to_key.get((cam, obs["local_id"]))
+                if key is not None and key in self._vehicles and cam not in obs_by_key.get(key, {}):
+                    obs_by_key.setdefault(key, {})[cam] = obs
+                else:
+                    unbound.append(obs)
 
-            if best_in is not None:
-                used_s.add(is_idx)
-                used_n.add(best_in)
-                on_item = obs_n[best_in]
-                avg_road = (
-                    0.5 * (os_item["road"][0] + on_item["road"][0]),
-                    0.5 * (os_item["road"][1] + on_item["road"][1]),
-                )
-                fused_obs.append({
-                    "bbox_s": os_item["bbox"],
-                    "bbox_n": on_item["bbox"],
-                    "road": avg_road,
-                    "class_name": os_item["class_name"] if os_item["conf"] >= on_item["conf"] else on_item["class_name"],
-                    "conf": max(os_item["conf"], on_item["conf"]),
-                })
-            else:
-                fused_obs.append({
-                    "bbox_s": os_item["bbox"],
-                    "bbox_n": None,
-                    "road": os_item["road"],
-                    "class_name": os_item["class_name"],
-                    "conf": os_item["conf"],
-                })
+            self._bind_new_local_tracks(cam, unbound, obs_by_key, frame_idx, dt)
 
-        for in_idx, on_item in enumerate(obs_n):
-            if in_idx not in used_n:
-                fused_obs.append({
-                    "bbox_s": None,
-                    "bbox_n": on_item["bbox"],
-                    "road": on_item["road"],
-                    "class_name": on_item["class_name"],
-                    "conf": on_item["conf"],
-                })
+        for key, cam_obs in obs_by_key.items():
+            self._apply_observation(self._vehicles[key], cam_obs, frame_idx, dt, pane_w)
 
-        # 3. Associate with confirmed tracks
-        unmatched_obs = list(range(len(fused_obs)))
-        for trk in self.confirmed_tracks:
-            pred_x = trk["road"][0] + trk["vel"][0] * dt
-            pred_y = trk["road"][1] + trk["vel"][1] * dt
+        for key, veh in self._vehicles.items():
+            if key not in obs_by_key:
+                veh["active_s"] = None
+                veh["active_n"] = None
 
-            best_oi = None
-            best_dist = float("inf")
-            for oi in unmatched_obs:
-                fo = fused_obs[oi]
-                d = math.hypot(fo["road"][0] - pred_x, fo["road"][1] - pred_y)
-                max_gate = 8.0 if (frame_idx - trk["last_seen"] <= 5) else 14.0
-                if d < best_dist and d < max_gate:
-                    best_dist = d
-                    best_oi = oi
+        if self.merge_duplicates:
+            self._merge_duplicates(obs_by_key)
+        self._expire(frame_idx)
 
-            if best_oi is not None:
-                fo = fused_obs[best_oi]
-                unmatched_obs.remove(best_oi)
-                time_diff = max(dt, (frame_idx - trk["last_seen"]) * dt)
-                vx = (fo["road"][0] - trk["road"][0]) / time_diff
-                vy = (fo["road"][1] - trk["road"][1]) / time_diff
-                trk["vel"] = (0.7 * trk["vel"][0] + 0.3 * vx, 0.7 * trk["vel"][1] + 0.3 * vy)
-                trk["road"] = fo["road"]
-                trk["last_seen"] = frame_idx
-                trk["hits"] += 1
-                trk["active_s"] = fo["bbox_s"]
-                trk["active_n"] = fo["bbox_n"]
-                trk["conf"] = fo["conf"]
-                trk["trajectory_road"].append((fo["road"][0], fo["road"][1], frame_idx * dt))
-                if fo["bbox_s"] is not None:
-                    trk["history_bboxes_composite"][frame_idx] = fo["bbox_s"]
-                elif fo["bbox_n"] is not None:
-                    bx_n = fo["bbox_n"]
-                    trk["history_bboxes_composite"][frame_idx] = (bx_n[0] + pane_w, bx_n[1], bx_n[2] + pane_w, bx_n[3])
-            else:
-                trk["active_s"] = None
-                trk["active_n"] = None
+        self.confirmed_tracks = [v for v in self._vehicles.values() if v["id"] is not None]
+        return [v for v in self.confirmed_tracks if v["active_s"] is not None or v["active_n"] is not None]
 
-        # 4. Associate remaining observations with tentative tracks
-        remaining_unmatched = []
-        for oi in unmatched_obs:
-            fo = fused_obs[oi]
-            matched_ten = False
-            for ten in self.tentative_tracks:
-                d = math.hypot(fo["road"][0] - ten["road"][0], fo["road"][1] - ten["road"][1])
-                if d < 7.0:
-                    ten["road"] = fo["road"]
-                    ten["last_seen"] = frame_idx
-                    ten["hits"] += 1
-                    ten["active_s"] = fo["bbox_s"]
-                    ten["active_n"] = fo["bbox_n"]
-                    ten["trajectory_road"].append((fo["road"][0], fo["road"][1], frame_idx * dt))
-                    if fo["bbox_s"] is not None:
-                        ten["history_bboxes_composite"][frame_idx] = fo["bbox_s"]
-                    elif fo["bbox_n"] is not None:
-                        bx_n = fo["bbox_n"]
-                        ten["history_bboxes_composite"][frame_idx] = (bx_n[0] + pane_w, bx_n[1], bx_n[2] + pane_w, bx_n[3])
-                    matched_ten = True
+    def _bind_new_local_tracks(
+        self,
+        cam: str,
+        unbound: List[Dict[str, Any]],
+        obs_by_key: Dict[int, Dict[str, Any]],
+        frame_idx: int,
+        dt: float,
+    ) -> None:
+        # Candidate (distance, obs index, key) pairs, matched greedily by smallest distance.
+        pairs: List[Tuple[float, int, int]] = []
+        for oi, obs in enumerate(unbound):
+            for key, veh in self._vehicles.items():
+                seen_now = obs_by_key.get(key, {})
+                if cam in seen_now:
+                    continue  # this camera already reports that vehicle this frame
+                if seen_now:  # seen by the other camera this frame
+                    other = next(iter(seen_now.values()))
+                    ref, gate = other["road"], self.SAME_FRAME_GATE_M
+                else:
+                    gap = frame_idx - veh["last_seen"]
+                    ref = (veh["road"][0] + veh["vel"][0] * dt * gap, veh["road"][1] + veh["vel"][1] * dt * gap)
+                    gate = self.RECENT_LOST_GATE_M if gap <= 5 else self.LONG_LOST_GATE_M
+                d = math.hypot(obs["road"][0] - ref[0], obs["road"][1] - ref[1])
+                if d < gate:
+                    pairs.append((d, oi, key))
 
-                    if ten["hits"] >= self.min_hits:
-                        ten["id"] = self.next_id
-                        self.next_id += 1
-                        self.confirmed_tracks.append(ten)
-                        self.tentative_tracks.remove(ten)
-                    break
-            if not matched_ten:
-                remaining_unmatched.append(oi)
+        used_obs, used_keys = set(), set()
+        for d, oi, key in sorted(pairs):
+            if oi in used_obs or key in used_keys:
+                continue
+            used_obs.add(oi)
+            used_keys.add(key)
+            obs = unbound[oi]
+            self._local_to_key[(cam, obs["local_id"])] = key
+            obs_by_key.setdefault(key, {})[cam] = obs
 
-        # 5. Create new tentative track
-        for oi in remaining_unmatched:
-            fo = fused_obs[oi]
-            r_center = math.hypot(fo["road"][0] - 2.0, fo["road"][1] - 6.0)
-            if r_center < 38.0:
-                hist_box = {}
-                if fo["bbox_s"] is not None:
-                    hist_box[frame_idx] = fo["bbox_s"]
-                elif fo["bbox_n"] is not None:
-                    bx_n = fo["bbox_n"]
-                    hist_box[frame_idx] = (bx_n[0] + pane_w, bx_n[1], bx_n[2] + pane_w, bx_n[3])
-                self.tentative_tracks.append({
-                    "class_name": fo["class_name"],
-                    "first_seen": frame_idx,
-                    "last_seen": frame_idx,
-                    "hits": 1,
-                    "road": fo["road"],
-                    "vel": (0.0, 0.0),
-                    "active_s": fo["bbox_s"],
-                    "active_n": fo["bbox_n"],
-                    "conf": fo["conf"],
-                    "trajectory_road": [(fo["road"][0], fo["road"][1], frame_idx * dt)],
-                    "history_bboxes_composite": hist_box,
-                })
+        for oi, obs in enumerate(unbound):
+            if oi in used_obs:
+                continue
+            if math.hypot(obs["road"][0] - self.roi_center[0], obs["road"][1] - self.roi_center[1]) >= self.roi_radius:
+                continue
+            key = self._next_key
+            self._next_key += 1
+            self._vehicles[key] = {
+                "id": None,
+                "class_name": obs["class_name"],
+                "first_seen": frame_idx,
+                "last_seen": frame_idx,
+                "hits": 0,
+                "road": obs["road"],
+                "vel": (0.0, 0.0),
+                "active_s": None,
+                "active_n": None,
+                "conf": obs["conf"],
+                "local_ids": {"south": [], "north": []},
+                "trajectory_road": [],
+                "history_bboxes_composite": {},
+            }
+            self._local_to_key[(cam, obs["local_id"])] = key
+            obs_by_key.setdefault(key, {})[cam] = obs
 
-        # 6. Prune stale tentative tracks
-        self.tentative_tracks = [t for t in self.tentative_tracks if frame_idx - t["last_seen"] <= 5]
+    def _road_point(self, bx: Sequence[float], cam_pos, cam_rot, w: int, h: int) -> Optional[Tuple[float, float]]:
+        """Road-plane position of a detected vehicle from its image box.
 
-        # 7. Archive expired confirmed tracks
-        surviving_conf = []
-        for trk in self.confirmed_tracks:
-            if frame_idx - trk["last_seen"] > self.max_age:
-                self.completed_tracks[str(trk["id"])] = trk
-            else:
-                surviving_conf.append(trk)
-        self.confirmed_tracks = surviving_conf
+        "box75": ray through the point at 75 % of the box height intersected with a plane 0.35 m above
+        the road - close to the vehicle centre from both camera directions (measured on CARLA ground
+        truth: median error 0.9 m vs 1.4 m, and the South/North estimates of one car agree to 1.7 m
+        vs 2.9 m). "bottom": bottom-centre of the box on the road (nearest edge of the vehicle).
+        """
+        u = (bx[0] + bx[2]) / 2.0
+        if self.ground_point == "box75":
+            v = bx[1] + 0.75 * (bx[3] - bx[1])
+            return pixel_to_road_ray(u, v, cam_pos, cam_rot, fov=90.0, w=w, h=h, ground_z=0.35)
+        return pixel_to_road_ray(u, float(bx[3]), cam_pos, cam_rot, fov=90.0, w=w, h=h)
 
-        return [t for t in self.confirmed_tracks if (t["active_s"] is not None or t["active_n"] is not None)]
+    def _merge_duplicates(self, obs_by_key: Dict[int, Dict[str, Any]]) -> None:
+        """Merge global vehicles that are the same car (seen by different cameras but not linked).
 
+        Two vehicles observed this frame by *different* cameras that stay within MERGE_DIST_M for
+        MERGE_FRAMES consecutive frames are merged; the confirmed / older one keeps its ID.
+        """
+        keys = [k for k in obs_by_key if k in self._vehicles]
+        close_now = set()
+        for i, a in enumerate(keys):
+            for b in keys[i + 1:]:
+                if set(obs_by_key[a]) & set(obs_by_key[b]):
+                    continue  # both seen by the same camera as separate detections -> two cars
+                va, vb = self._vehicles[a], self._vehicles[b]
+                if math.hypot(va["road"][0] - vb["road"][0], va["road"][1] - vb["road"][1]) < self.MERGE_DIST_M:
+                    pair = (min(a, b), max(a, b))
+                    close_now.add(pair)
+                    self._close_pairs[pair] = self._close_pairs.get(pair, 0) + 1
+        self._close_pairs = {p: n for p, n in self._close_pairs.items() if p in close_now}
+        for (a, b), n in list(self._close_pairs.items()):
+            if n < self.MERGE_FRAMES or a not in self._vehicles or b not in self._vehicles:
+                continue
+            va, vb = self._vehicles[a], self._vehicles[b]
+            rank = lambda v: (v["id"] is None, v["id"] if v["id"] is not None else 0, v["first_seen"])
+            keep, drop = (a, b) if rank(va) <= rank(vb) else (b, a)
+            vk, vd = self._vehicles[keep], self._vehicles[drop]
+            for cam in ("south", "north"):
+                vk["local_ids"][cam] = sorted(set(vk["local_ids"][cam]) | set(vd["local_ids"][cam]))
+            if vk["active_s"] is None:
+                vk["active_s"] = vd["active_s"]
+            if vk["active_n"] is None:
+                vk["active_n"] = vd["active_n"]
+            for lk, kk in list(self._local_to_key.items()):
+                if kk == drop:
+                    self._local_to_key[lk] = keep
+            vk["hits"] += vd["hits"]
+            if vk["id"] is None and vk["hits"] >= self.min_hits:
+                vk["id"] = self.next_id
+                self.next_id += 1
+            del self._vehicles[drop]
+            self._close_pairs.pop((a, b), None)
+
+    def _apply_observation(
+        self, veh: Dict[str, Any], cam_obs: Dict[str, Dict[str, Any]], frame_idx: int, dt: float, pane_w: int
+    ) -> None:
+        obs_s, obs_n = cam_obs.get("south"), cam_obs.get("north")
+        pts = [o["road"] for o in (obs_s, obs_n) if o is not None]
+        road = (sum(p[0] for p in pts) / len(pts), sum(p[1] for p in pts) / len(pts))
+
+        if veh["hits"] > 0:
+            time_diff = max(dt, (frame_idx - veh["last_seen"]) * dt)
+            vx = (road[0] - veh["road"][0]) / time_diff
+            vy = (road[1] - veh["road"][1]) / time_diff
+            veh["vel"] = (0.7 * veh["vel"][0] + 0.3 * vx, 0.7 * veh["vel"][1] + 0.3 * vy)
+
+        best = max((o for o in (obs_s, obs_n) if o is not None), key=lambda o: o["conf"])
+        veh["road"] = road
+        veh["last_seen"] = frame_idx
+        veh["hits"] += 1
+        veh["conf"] = best["conf"]
+        veh["class_name"] = best["class_name"]
+        veh["active_s"] = obs_s["bbox"] if obs_s else None
+        veh["active_n"] = obs_n["bbox"] if obs_n else None
+        for o in (obs_s, obs_n):
+            if o is not None and o["local_id"] not in veh["local_ids"][o["cam"]]:
+                veh["local_ids"][o["cam"]].append(o["local_id"])
+        veh["trajectory_road"].append((road[0], road[1], frame_idx * dt))
+        if obs_s is not None:
+            veh["history_bboxes_composite"][frame_idx] = obs_s["bbox"]
+        else:
+            bx = obs_n["bbox"]
+            veh["history_bboxes_composite"][frame_idx] = (bx[0] + pane_w, bx[1], bx[2] + pane_w, bx[3])
+
+        if veh["id"] is None and veh["hits"] >= self.min_hits:
+            veh["id"] = self.next_id
+            self.next_id += 1
+
+    def _expire(self, frame_idx: int) -> None:
+        expired = []
+        for key, veh in self._vehicles.items():
+            gap = frame_idx - veh["last_seen"]
+            if veh["id"] is None and gap > 5:
+                expired.append(key)  # unconfirmed vehicle that vanished
+            elif gap > self.max_age:
+                self.completed_tracks[str(veh["id"])] = veh
+                expired.append(key)
+        for key in expired:
+            del self._vehicles[key]
+        if expired:
+            gone = set(expired)
+            self._local_to_key = {k: v for k, v in self._local_to_key.items() if v not in gone}

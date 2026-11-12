@@ -1,0 +1,20 @@
+# RoundWatch - BoT-SORT tracker configuration (Ultralytics tracker format)
+# Used per camera by VehicleDetector.track() and BoTSORTTracker.
+# Docs: https://docs.ultralytics.com/modes/track
+
+tracker_type: botsort
+track_high_thresh: 0.25  # first-stage association threshold (matches the detector confidence used so far)
+track_low_thresh: 0.10   # second-stage (low-score) association threshold
+new_track_thresh: 0.30   # min confidence to start a new track
+track_buffer: 40         # frames a lost track is kept (2 s @ 20 FPS) - covers short occlusions
+match_thresh: 0.80       # association cost threshold
+fuse_score: true         # fuse detection score with IoU
+
+# BoT-SORT specifics
+gmc_method: sparseOptFlow  # camera motion compensation (pole vibration): sparseOptFlow | orb | sift | ecc | none
+
+# Re-ID
+with_reid: true          # appearance embeddings for re-association after occlusion
+model: auto              # "auto" = reuse YOLO detector features (no extra ReID network)
+proximity_thresh: 0.50   # min IoU for a pair to be considered for ReID matching
+appearance_thresh: 0.80  # min appearance similarity for ReID matching

@@ -104,7 +104,7 @@ def run_full_pipeline(
     cam_pos_n = [-2.31, 27.2, 11.5]
     cam_rot_n = [-28.0, -80.0, 0.0]
 
-    # 3. Dynamic Multi-Camera Tracker (100% Dynamic On-The-Fly IDs, Zero Hardcoding/GT)
+    # 3. Cross-camera ID fusion on top of per-camera BoT-SORT tracks (no GT, IDs assigned on the fly)
     tracker = DynamicMultiCameraTracker(
         cam_pos_s=cam_pos_s,
         cam_rot_s=cam_rot_s,
@@ -114,9 +114,10 @@ def run_full_pipeline(
         min_hits=3,
     )
 
-    # 4. Initialize YOLOv8 Detector
-    print("[Pipeline] Initializing YOLOv8 Detector on CUDA...")
-    detector = VehicleDetector(model_name="yolov8s.pt", confidence_thresh=0.25, device="cuda:0")
+    # 4. YOLOv8 + BoT-SORT per camera (one instance each: BoT-SORT state is per stream)
+    print("[Pipeline] Initializing YOLOv8 + BoT-SORT (South & North) on CUDA...")
+    detector_s = VehicleDetector(model_name="yolov8s.pt", confidence_thresh=0.25, device="cuda:0")
+    detector_n = VehicleDetector(model_name="yolov8s.pt", confidence_thresh=0.25, device="cuda:0")
 
     print("[Pipeline] Loading AI Compliance Classifier...")
     classifier = TrajectoryClassifier(model_path=model_path, geometry=geom)
@@ -148,12 +149,12 @@ def run_full_pipeline(
             frame_s = frame[:, :pane_w].copy()
             frame_n = frame[:, pane_w:].copy()
 
-            dets_s = detector.detect(frame_s)
-            dets_n = detector.detect(frame_n)
+            tracks_s = detector_s.track(frame_s)
+            tracks_n = detector_n.track(frame_n)
 
             active_tracks = tracker.update(
-                dets_s=dets_s,
-                dets_n=dets_n,
+                tracks_s=tracks_s,
+                tracks_n=tracks_n,
                 frame_idx=frame_idx,
                 dt=1.0 / fps,
                 pane_w=pane_w,

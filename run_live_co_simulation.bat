@@ -29,5 +29,6 @@ if not exist "%SUMO_HOME%\tools" (
 )
 set "PATH=%SUMO_HOME%\bin;%PATH%"
 set "PYTHONPATH=%SUMO_HOME%\tools;%CARLA_ROOT%\Co-Simulation\Sumo;%~dp0"
-"%PYTHON_EXE%" scripts\watch_live_simulation.py
+REM Optional: run_live_co_simulation.bat --map roundabout_2lane   (default: town03)
+"%PYTHON_EXE%" scripts\watch_live_simulation.py %*
 pause

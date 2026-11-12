@@ -21,7 +21,6 @@ sys.path.insert(0, os.path.abspath("."))
 
 from src.perception.detector import VehicleDetector
 from src.perception.homography import RoadwayHomography
-from src.perception.tracker import BoTSORTTracker
 
 
 def run_tracking_pipeline(
@@ -63,8 +62,8 @@ def run_tracking_pipeline(
         print("[Tracker] Loaded calibrated homography matrix.")
 
     # Initialize Perception Modules
+    # YOLO + official BoT-SORT (GMC + native ReID), config in configs/botsort.yaml
     detector = VehicleDetector(model_name="yolov8n.pt", confidence_thresh=0.30, device="cuda:0")
-    tracker = BoTSORTTracker(max_age=30, min_hits=3, iou_threshold=0.25)
 
     writer = None
     output_video_path = Path(output_dir) / "tracked_roundabout_feed.mp4"
@@ -89,11 +88,8 @@ def run_tracking_pipeline(
 
         timestamp = frame_idx / fps
 
-        # 1. YOLO Vehicle Detection
-        detections = detector.detect(frame)
-
-        # 2. Multi-Object Tracking
-        active_tracks = tracker.update(detections, current_frame=frame, timestamp=timestamp)
+        # 1-2. YOLO Vehicle Detection + BoT-SORT Multi-Object Tracking
+        active_tracks = detector.track(frame)
 
         # 3. Trajectory Mapping and Visual Annotation
         annotated_frame = frame.copy() if render_video else None

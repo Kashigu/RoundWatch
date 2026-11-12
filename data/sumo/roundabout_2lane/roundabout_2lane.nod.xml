@@ -1,0 +1,10 @@
+<nodes>
+    <node id="ring_E" x="18.00" y="0.00" type="priority"/>
+    <node id="far_E" x="98.00" y="0.00" type="dead_end"/>
+    <node id="ring_N" x="0.00" y="18.00" type="priority"/>
+    <node id="far_N" x="0.00" y="98.00" type="dead_end"/>
+    <node id="ring_W" x="-18.00" y="0.00" type="priority"/>
+    <node id="far_W" x="-98.00" y="0.00" type="dead_end"/>
+    <node id="ring_S" x="-0.00" y="-18.00" type="priority"/>
+    <node id="far_S" x="-0.00" y="-98.00" type="dead_end"/>
+</nodes>

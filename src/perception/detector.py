@@ -81,11 +81,17 @@ class VehicleDetector:
         confidence_thresh: float = 0.25,
         iou_thresh: float = 0.45,
         device: str = "cuda:0",
+        imgsz: Optional[int] = None,
+        agnostic_nms: bool = True,
     ) -> None:
         self.confidence_thresh = confidence_thresh
         self.iou_thresh = iou_thresh
         self.device = _resolve_device(device)
         self.model_name = model_name
+        # One box per vehicle: without this a van/truck is often boxed as both 'car' and 'truck',
+        # which becomes two tracks and duplicate global IDs downstream.
+        self.agnostic_nms = agnostic_nms
+        self.imgsz = imgsz  # YOLO inference size; None = max(1280, frame size)
 
         if YOLO is not None:
             self.model = YOLO(model_name)
@@ -104,9 +110,7 @@ class VehicleDetector:
 
         # Perform inference on GPU with high-res feature preservation
         h, w = frame.shape[:2]
-        img_size = max(w, h)
-        if img_size < 1280:
-            img_size = 1280
+        img_size = self.imgsz or max(1280, w, h)
 
         results = self.model.predict(
             source=frame,
@@ -115,16 +119,55 @@ class VehicleDetector:
             imgsz=img_size,
             classes=target_classes,
             device=self.device,
+            agnostic_nms=self.agnostic_nms,
             verbose=False,
         )
 
-        detections: List[Dict[str, Any]] = []
+        return self._parse_results(results, with_ids=False)
 
+    def track(
+        self,
+        frame: np.ndarray,
+        tracker_cfg: str = "configs/botsort.yaml",
+        target_classes: Optional[List[int]] = None,
+    ) -> List[Dict[str, Any]]:
+        """Detect and track vehicles in one camera stream with the official Ultralytics BoT-SORT.
+
+        Tracker state (Kalman filter, GMC camera-motion compensation, ReID features) persists across
+        calls, so each camera stream must use its own VehicleDetector instance.
+        Returns confirmed tracks only, each with a per-camera ``track_id``.
+        """
+        if self.model is None:
+            raise RuntimeError("Ultralytics YOLO is not installed.")
+
+        if target_classes is None:
+            target_classes = list(self.VEHICLE_CLASSES.keys())
+
+        h, w = frame.shape[:2]
+        img_size = self.imgsz or max(1280, w, h)
+
+        # conf=None -> Ultralytics passes low-confidence boxes (0.1) to BoT-SORT's second association stage
+        results = self.model.track(
+            source=frame,
+            persist=True,
+            tracker=tracker_cfg,
+            iou=self.iou_thresh,
+            imgsz=img_size,
+            classes=target_classes,
+            device=self.device,
+            agnostic_nms=self.agnostic_nms,
+            verbose=False,
+        )
+        return self._parse_results(results, with_ids=True)
+
+    def _parse_results(self, results: Any, with_ids: bool) -> List[Dict[str, Any]]:
+        detections: List[Dict[str, Any]] = []
         if not results:
             return detections
 
-        r = results[0]
-        boxes = r.boxes
+        boxes = results[0].boxes
+        if with_ids and boxes.id is None:
+            return detections
 
         for i in range(len(boxes)):
             cls_id = int(boxes.cls[i].item())
@@ -140,11 +183,14 @@ class VehicleDetector:
             if (x2 - x1) < 12 or (y2 - y1) < 12:
                 continue
 
-            detections.append({
+            det = {
                 "bbox": (x1, y1, x2, y2),
                 "class_id": cls_id,
                 "class_name": self.VEHICLE_CLASSES.get(cls_id, "car"),
                 "conf": round(conf, 3),
-            })
+            }
+            if with_ids:
+                det["track_id"] = int(boxes.id[i].item())
+            detections.append(det)
 
         return detections

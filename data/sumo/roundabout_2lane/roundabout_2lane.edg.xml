@@ -1,0 +1,27 @@
+<edges>
+    <edge id="in_E" from="far_E" to="ring_E" numLanes="2" speed="13.89" width="3.5" priority="1" shape="98.00,1.50 34.00,1.50 28.00,1.50 24.50,0.40">
+        <lane index="0" changeLeft="emergency authority"/>
+        <lane index="1" changeRight="emergency authority"/>
+    </edge>
+    <edge id="out_E" from="ring_E" to="far_E" numLanes="1" speed="13.89" width="3.5" priority="1" shape="24.50,-0.40 28.00,-1.50 34.00,-1.50 98.00,-1.50"/>
+    <edge id="in_N" from="far_N" to="ring_N" numLanes="2" speed="13.89" width="3.5" priority="1" shape="-1.50,98.00 -1.50,34.00 -1.50,28.00 -0.40,24.50">
+        <lane index="0" changeLeft="emergency authority"/>
+        <lane index="1" changeRight="emergency authority"/>
+    </edge>
+    <edge id="out_N" from="ring_N" to="far_N" numLanes="1" speed="13.89" width="3.5" priority="1" shape="0.40,24.50 1.50,28.00 1.50,34.00 1.50,98.00"/>
+    <edge id="in_W" from="far_W" to="ring_W" numLanes="2" speed="13.89" width="3.5" priority="1" shape="-98.00,-1.50 -34.00,-1.50 -28.00,-1.50 -24.50,-0.40">
+        <lane index="0" changeLeft="emergency authority"/>
+        <lane index="1" changeRight="emergency authority"/>
+    </edge>
+    <edge id="out_W" from="ring_W" to="far_W" numLanes="1" speed="13.89" width="3.5" priority="1" shape="-24.50,0.40 -28.00,1.50 -34.00,1.50 -98.00,1.50"/>
+    <edge id="in_S" from="far_S" to="ring_S" numLanes="2" speed="13.89" width="3.5" priority="1" shape="1.50,-98.00 1.50,-34.00 1.50,-28.00 0.40,-24.50">
+        <lane index="0" changeLeft="emergency authority"/>
+        <lane index="1" changeRight="emergency authority"/>
+    </edge>
+    <edge id="out_S" from="ring_S" to="far_S" numLanes="1" speed="13.89" width="3.5" priority="1" shape="-0.40,-24.50 -1.50,-28.00 -1.50,-34.00 -1.50,-98.00"/>
+    <edge id="ring_EN" from="ring_E" to="ring_N" numLanes="2" speed="8.33" width="4.0" priority="2" spreadType="center" shape="18.00,0.00 17.85,2.35 17.39,4.66 16.63,6.89 15.59,9.00 14.28,10.96 12.73,12.73 10.96,14.28 9.00,15.59 6.89,16.63 4.66,17.39 2.35,17.85 0.00,18.00"/>
+    <edge id="ring_NW" from="ring_N" to="ring_W" numLanes="2" speed="8.33" width="4.0" priority="2" spreadType="center" shape="0.00,18.00 -2.35,17.85 -4.66,17.39 -6.89,16.63 -9.00,15.59 -10.96,14.28 -12.73,12.73 -14.28,10.96 -15.59,9.00 -16.63,6.89 -17.39,4.66 -17.85,2.35 -18.00,0.00"/>
+    <edge id="ring_WS" from="ring_W" to="ring_S" numLanes="2" speed="8.33" width="4.0" priority="2" spreadType="center" shape="-18.00,0.00 -17.85,-2.35 -17.39,-4.66 -16.63,-6.89 -15.59,-9.00 -14.28,-10.96 -12.73,-12.73 -10.96,-14.28 -9.00,-15.59 -6.89,-16.63 -4.66,-17.39 -2.35,-17.85 -0.00,-18.00"/>
+    <edge id="ring_SE" from="ring_S" to="ring_E" numLanes="2" speed="8.33" width="4.0" priority="2" spreadType="center" shape="-0.00,-18.00 2.35,-17.85 4.66,-17.39 6.89,-16.63 9.00,-15.59 10.96,-14.28 12.73,-12.73 14.28,-10.96 15.59,-9.00 16.63,-6.89 17.39,-4.66 17.85,-2.35 18.00,-0.00"/>
+    <roundabout nodes="ring_E ring_N ring_W ring_S" edges="ring_EN ring_NW ring_WS ring_SE"/>
+</edges>

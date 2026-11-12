@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <!-- vType ids are CARLA blueprint names, so the CARLA bridge spawns that exact model. -->
+    <!-- Compliant drivers: stay in the lane they entered on (keepRight 0) and change only when the route demands it. -->
+    <vType id="vehicle.audi.tt" vClass="passenger" length="4.2" width="1.9" maxSpeed="13.9" accel="2.2" decel="4.0" minGap="2.5" tau="1.2" lcKeepRight="0" lcSpeedGain="0" lcStrategic="1.0" color="0,220,70"/>
+    <vType id="vehicle.mercedes.coupe" vClass="passenger" length="4.7" width="2.0" maxSpeed="13.9" accel="2.2" decel="4.0" minGap="2.5" tau="1.2" lcKeepRight="0" lcSpeedGain="0" lcStrategic="1.0" color="30,140,250"/>
+    <vType id="vehicle.seat.leon" vClass="passenger" length="4.3" width="1.8" maxSpeed="13.9" accel="2.2" decel="4.0" minGap="2.5" tau="1.2" lcKeepRight="0" lcSpeedGain="0" lcStrategic="1.0" color="200,200,200"/>
+    <vType id="vehicle.citroen.c3" vClass="passenger" length="4.0" width="1.8" maxSpeed="13.9" accel="2.0" decel="4.0" minGap="2.5" tau="1.2" lcKeepRight="0" lcSpeedGain="0" lcStrategic="1.0" color="240,150,20"/>
+    <vType id="vehicle.carlamotors.carlacola" vClass="truck" length="5.3" width="2.6" maxSpeed="11.1" accel="1.2" decel="3.0" minGap="3.0" tau="1.5" lcKeepRight="0" lcSpeedGain="0" lcStrategic="1.0" color="220,180,20"/>
+    <vType id="vehicle.yamaha.yzf" vClass="motorcycle" length="2.2" width="0.8" maxSpeed="13.9" accel="3.0" decel="5.0" minGap="2.0" tau="1.0" lcKeepRight="0" lcSpeedGain="0" lcStrategic="1.0" color="230,40,230"/>
+    <!-- Infraction driver: always prefers the outer (right) lane, even for exit 2+ (INFRACTION_OUTER_MISUSE). -->
+    <vType id="vehicle.mini.cooper_s" vClass="passenger" length="3.8" width="1.8" maxSpeed="13.9" accel="2.2" decel="4.0" minGap="2.5" tau="1.2" lcKeepRight="10" lcSpeedGain="0" lcCooperative="0" lcStrategic="0.2" color="230,40,40"/>
+
+    <route id="r_E_exit1" edges="in_E ring_EN out_N"/>
+    <route id="r_E_exit2" edges="in_E ring_EN ring_NW out_W"/>
+    <route id="r_E_exit3" edges="in_E ring_EN ring_NW ring_WS out_S"/>
+    <route id="r_N_exit1" edges="in_N ring_NW out_W"/>
+    <route id="r_N_exit2" edges="in_N ring_NW ring_WS out_S"/>
+    <route id="r_N_exit3" edges="in_N ring_NW ring_WS ring_SE out_E"/>
+    <route id="r_W_exit1" edges="in_W ring_WS out_S"/>
+    <route id="r_W_exit2" edges="in_W ring_WS ring_SE out_E"/>
+    <route id="r_W_exit3" edges="in_W ring_WS ring_SE ring_EN out_N"/>
+    <route id="r_S_exit1" edges="in_S ring_SE out_E"/>
+    <route id="r_S_exit2" edges="in_S ring_SE ring_EN out_N"/>
+    <route id="r_S_exit3" edges="in_S ring_SE ring_EN ring_NW out_W"/>
+    <vehicle id="E_exit3_COMPLIANT_EXIT2PLUS_001" type="vehicle.mercedes.coupe" route="r_E_exit3" depart="4.08" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit3_COMPLIANT_EXIT2PLUS_002" type="vehicle.audi.tt" route="r_E_exit3" depart="9.41" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit3_INF_OUTER_MISUSE_003" type="vehicle.mini.cooper_s" route="r_E_exit3" depart="10.40" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="S_exit1_COMPLIANT_EXIT1_004" type="vehicle.seat.leon" route="r_S_exit1" depart="14.60" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit1_COMPLIANT_EXIT1_005" type="vehicle.citroen.c3" route="r_E_exit1" depart="15.90" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="N_exit1_COMPLIANT_EXIT1_006" type="vehicle.yamaha.yzf" route="r_N_exit1" depart="17.57" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit2_INF_OUTER_MISUSE_007" type="vehicle.mini.cooper_s" route="r_E_exit2" depart="19.21" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="W_exit1_COMPLIANT_EXIT1_008" type="vehicle.citroen.c3" route="r_W_exit1" depart="26.73" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="S_exit1_COMPLIANT_EXIT1_009" type="vehicle.seat.leon" route="r_S_exit1" depart="29.80" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="W_exit3_INF_OUTER_MISUSE_010" type="vehicle.mini.cooper_s" route="r_W_exit3" depart="36.88" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="N_exit2_COMPLIANT_EXIT2PLUS_011" type="vehicle.citroen.c3" route="r_N_exit2" depart="37.17" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="S_exit2_COMPLIANT_EXIT2PLUS_012" type="vehicle.citroen.c3" route="r_S_exit2" depart="45.22" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="W_exit1_COMPLIANT_EXIT1_013" type="vehicle.citroen.c3" route="r_W_exit1" depart="45.93" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit3_COMPLIANT_EXIT2PLUS_014" type="vehicle.seat.leon" route="r_E_exit3" depart="50.77" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="S_exit2_COMPLIANT_EXIT2PLUS_015" type="vehicle.carlamotors.carlacola" route="r_S_exit2" depart="51.89" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="N_exit3_COMPLIANT_EXIT2PLUS_016" type="vehicle.citroen.c3" route="r_N_exit3" depart="56.56" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit2_COMPLIANT_EXIT2PLUS_017" type="vehicle.audi.tt" route="r_E_exit2" depart="56.79" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="W_exit1_COMPLIANT_EXIT1_018" type="vehicle.citroen.c3" route="r_W_exit1" depart="66.56" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="S_exit1_COMPLIANT_EXIT1_019" type="vehicle.mercedes.coupe" route="r_S_exit1" depart="68.57" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="W_exit3_COMPLIANT_EXIT2PLUS_020" type="vehicle.carlamotors.carlacola" route="r_W_exit3" depart="69.71" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="N_exit1_COMPLIANT_EXIT1_021" type="vehicle.seat.leon" route="r_N_exit1" depart="71.75" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit1_COMPLIANT_EXIT1_022" type="vehicle.audi.tt" route="r_E_exit1" depart="72.13" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="S_exit3_INF_OUTER_MISUSE_023" type="vehicle.mini.cooper_s" route="r_S_exit3" depart="72.82" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="S_exit3_COMPLIANT_EXIT2PLUS_024" type="vehicle.seat.leon" route="r_S_exit3" depart="74.75" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit3_COMPLIANT_EXIT2PLUS_025" type="vehicle.citroen.c3" route="r_E_exit3" depart="86.17" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="W_exit1_COMPLIANT_EXIT1_026" type="vehicle.mercedes.coupe" route="r_W_exit1" depart="92.02" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit3_COMPLIANT_EXIT2PLUS_027" type="vehicle.mercedes.coupe" route="r_E_exit3" depart="92.71" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="N_exit3_COMPLIANT_EXIT2PLUS_028" type="vehicle.carlamotors.carlacola" route="r_N_exit3" depart="95.49" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="N_exit1_COMPLIANT_EXIT1_029" type="vehicle.mercedes.coupe" route="r_N_exit1" depart="96.90" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit3_COMPLIANT_EXIT2PLUS_030" type="vehicle.audi.tt" route="r_E_exit3" depart="97.61" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="W_exit1_COMPLIANT_EXIT1_031" type="vehicle.audi.tt" route="r_W_exit1" depart="108.19" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit1_COMPLIANT_EXIT1_032" type="vehicle.citroen.c3" route="r_E_exit1" depart="116.61" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="N_exit1_COMPLIANT_EXIT1_033" type="vehicle.citroen.c3" route="r_N_exit1" depart="123.38" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="N_exit2_COMPLIANT_EXIT2PLUS_034" type="vehicle.seat.leon" route="r_N_exit2" depart="135.12" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="N_exit3_COMPLIANT_EXIT2PLUS_035" type="vehicle.yamaha.yzf" route="r_N_exit3" depart="148.46" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="S_exit3_COMPLIANT_EXIT2PLUS_036" type="vehicle.mercedes.coupe" route="r_S_exit3" depart="152.66" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit3_COMPLIANT_EXIT2PLUS_037" type="vehicle.seat.leon" route="r_E_exit3" depart="152.92" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit1_COMPLIANT_EXIT1_038" type="vehicle.audi.tt" route="r_E_exit1" depart="152.95" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="W_exit1_COMPLIANT_EXIT1_039" type="vehicle.seat.leon" route="r_W_exit1" depart="153.08" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="S_exit1_COMPLIANT_EXIT1_040" type="vehicle.seat.leon" route="r_S_exit1" depart="154.38" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="S_exit1_COMPLIANT_EXIT1_041" type="vehicle.citroen.c3" route="r_S_exit1" depart="159.52" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="N_exit1_COMPLIANT_EXIT1_042" type="vehicle.audi.tt" route="r_N_exit1" depart="166.11" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="S_exit2_COMPLIANT_EXIT2PLUS_043" type="vehicle.citroen.c3" route="r_S_exit2" depart="168.37" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit1_COMPLIANT_EXIT1_044" type="vehicle.mercedes.coupe" route="r_E_exit1" depart="172.84" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit1_COMPLIANT_EXIT1_045" type="vehicle.audi.tt" route="r_E_exit1" depart="174.50" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="N_exit2_INF_OUTER_MISUSE_046" type="vehicle.mini.cooper_s" route="r_N_exit2" depart="177.58" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit2_COMPLIANT_EXIT2PLUS_047" type="vehicle.citroen.c3" route="r_E_exit2" depart="180.06" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit1_COMPLIANT_EXIT1_048" type="vehicle.carlamotors.carlacola" route="r_E_exit1" depart="180.47" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="N_exit2_COMPLIANT_EXIT2PLUS_049" type="vehicle.audi.tt" route="r_N_exit2" depart="188.03" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit1_COMPLIANT_EXIT1_050" type="vehicle.mercedes.coupe" route="r_E_exit1" depart="190.08" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="W_exit2_COMPLIANT_EXIT2PLUS_051" type="vehicle.citroen.c3" route="r_W_exit2" depart="206.96" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="S_exit1_COMPLIANT_EXIT1_052" type="vehicle.audi.tt" route="r_S_exit1" depart="212.20" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit3_COMPLIANT_EXIT2PLUS_053" type="vehicle.audi.tt" route="r_E_exit3" depart="213.19" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit3_COMPLIANT_EXIT2PLUS_054" type="vehicle.carlamotors.carlacola" route="r_E_exit3" depart="214.69" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit3_INF_OUTER_MISUSE_055" type="vehicle.mini.cooper_s" route="r_E_exit3" depart="217.72" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit3_COMPLIANT_EXIT2PLUS_056" type="vehicle.mercedes.coupe" route="r_E_exit3" depart="218.54" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="N_exit3_COMPLIANT_EXIT2PLUS_057" type="vehicle.seat.leon" route="r_N_exit3" depart="229.90" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="W_exit2_COMPLIANT_EXIT2PLUS_058" type="vehicle.citroen.c3" route="r_W_exit2" depart="232.08" departLane="1" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="S_exit1_COMPLIANT_EXIT1_059" type="vehicle.citroen.c3" route="r_S_exit1" depart="233.17" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="W_exit1_COMPLIANT_EXIT1_060" type="vehicle.audi.tt" route="r_W_exit1" depart="234.60" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="E_exit1_COMPLIANT_EXIT1_061" type="vehicle.seat.leon" route="r_E_exit1" depart="238.48" departLane="0" departSpeed="max" arrivalLane="current"/>
+    <vehicle id="N_exit2_COMPLIANT_EXIT2PLUS_062" type="vehicle.carlamotors.carlacola" route="r_N_exit2" depart="241.30" departLane="1" departSpeed="max" arrivalLane="current"/>
+</routes>

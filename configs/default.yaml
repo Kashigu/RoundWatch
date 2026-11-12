@@ -53,14 +53,11 @@ perception:
   input_resolution: [640, 640]
 
 tracking:
-  tracker_type: "botsort"
-  track_high_thresh: 0.50
-  track_low_thresh: 0.10
-  new_track_thresh: 0.60
-  track_buffer: 40 # frames to keep lost tracks
-  match_thresh: 0.80
-  cmc_method: "orb" # camera motion compensation
-  with_reid: true
+  tracker_type: "botsort" # official Ultralytics BoT-SORT, one instance per camera
+  tracker_config: "configs/botsort.yaml" # all BoT-SORT parameters (thresholds, GMC, ReID) live here
+  fusion: # cross-camera global-ID fusion (DynamicMultiCameraTracker)
+    max_age_frames: 45
+    min_hits: 3
 
 compliance:
   rule_standard: "portuguese_highway_code"

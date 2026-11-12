@@ -49,3 +49,9 @@ models/*.onnx
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Generated alternative SUMO demands (scripts/record_tracking_dataset.py --route-seed)
+data/sumo/roundabout_2lane/_gen_*
+# Recorded evaluation / training datasets (large)
+data/eval/
+data/yolo_carla/
