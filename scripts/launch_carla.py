@@ -2,7 +2,9 @@ import subprocess
 import time
 import os
 
-carla_dir = r"E:\Simulation_Engines\CARLA_0.9.15"
+from runtime_paths import configured_path
+
+carla_dir = str(configured_path("CARLA_ROOT"))
 carla_exe = os.path.join(carla_dir, "CarlaUE4.exe")
 
 print("Launching CARLA...")
@@ -25,4 +27,3 @@ for i in range(10):
         break
     else:
         print(f"CARLA still running... ({i+1}s)")
-

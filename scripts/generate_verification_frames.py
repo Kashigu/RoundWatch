@@ -8,6 +8,8 @@ import numpy as np
 
 sys.path.insert(0, os.path.abspath("."))
 
+from runtime_paths import artifact_directory
+
 from src.compliance.geometry import RoundaboutGeometry
 from src.perception.homography import RoadwayHomography
 from src.visualization.ar_overlay import AROverlayEngine
@@ -93,7 +95,7 @@ if f450_unsel is not None:
 cap.release()
 
 # Copy to artifacts directory
-artifact_dir = r"C:\Users\orlan\.gemini\antigravity\brain\dc5e9231-1ac9-4f55-b832-205cbb1301e5"
+artifact_dir = str(artifact_directory())
 for name in ["fixed_frame_0.png", "fixed_frame_250_unselected.png", "fixed_frame_250_selected.png", "fixed_frame_450_transit.png", "fixed_frame_450_selected.png"]:
     if os.path.exists(name):
         shutil.copy(name, os.path.join(artifact_dir, name))

@@ -8,14 +8,60 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
+import warnings
 
 import cv2
 import numpy as np
 
 try:
     from ultralytics import YOLO
+    import torch
 except ImportError:
     YOLO = None
+    torch = None
+
+
+def _resolve_device(device: str) -> str:
+    """Fall back to CPU when the requested CUDA device is unavailable."""
+    cuda_requested = device.startswith("cuda") or device.isdigit()
+    if not cuda_requested:
+        return device
+
+    if torch is None or not torch.cuda.is_available():
+        warnings.warn(
+            f"CUDA device {device!r} was requested but CUDA is unavailable; using CPU.",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+        return "cpu"
+
+    if device.startswith("cuda:"):
+        try:
+            device_index = int(device.partition(":")[2])
+        except ValueError:
+            return device
+        if device_index >= torch.cuda.device_count():
+            warnings.warn(
+                f"CUDA device {device!r} was requested but only "
+                f"{torch.cuda.device_count()} device(s) are available; using CPU.",
+                RuntimeWarning,
+                stacklevel=2,
+            )
+            return "cpu"
+
+    # CUDA can report as available while the PyTorch build lacks kernels for this GPU
+    # (e.g. RTX 50-series / sm_120 needs PyTorch >= 2.7 built for CUDA 12.8).
+    try:
+        torch.zeros(1, device=device if device.startswith("cuda") else f"cuda:{device}")
+    except Exception as exc:  # noqa: BLE001 - any failure means the GPU is unusable here
+        warnings.warn(
+            f"CUDA device {device!r} is not usable with this PyTorch build ({exc}); using CPU.",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+        return "cpu"
+
+    return device
 
 
 class VehicleDetector:
@@ -38,18 +84,7 @@ class VehicleDetector:
     ) -> None:
         self.confidence_thresh = confidence_thresh
         self.iou_thresh = iou_thresh
-        if device.startswith("cuda"):
-            try:
-                import torch
-                # Test whether CUDA kernel actually executes on current GPU
-                test_tensor = torch.zeros(1, device="cuda")
-                del test_tensor
-                self.device = device
-            except Exception:
-                print(f"[Detector] CUDA device {device} kernel not supported by current PyTorch build. Falling back to CPU.")
-                self.device = "cpu"
-        else:
-            self.device = device
+        self.device = _resolve_device(device)
         self.model_name = model_name
 
         if YOLO is not None:
@@ -113,4 +148,3 @@ class VehicleDetector:
             })
 
         return detections
-

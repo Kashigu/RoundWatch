@@ -1,8 +1,13 @@
 import base64
 import os
+import sys
+from pathlib import Path
 import cv2
 
-artifact_dir = r"C:\Users\orlan\.gemini\antigravity\brain\dc5e9231-1ac9-4f55-b832-205cbb1301e5"
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from scripts.runtime_paths import artifact_directory
+
+artifact_dir = str(artifact_directory())
 out_html_path = os.path.join(artifact_dir, "dual_camera_verification_dashboard.html")
 
 def img_to_b64(path, quality=80):
@@ -176,4 +181,3 @@ with open(out_html_path, "w", encoding="utf-8") as f:
     f.write(html_content)
 
 print(f"SUCCESS: Generated {out_html_path} ({len(html_content)} bytes)")
-

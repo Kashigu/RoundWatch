@@ -15,16 +15,15 @@ import time
 import cv2
 import numpy as np
 
-if "SUMO_HOME" not in os.environ:
-    if os.path.exists(r"C:\Simulation_Engines\SUMO"):
-        os.environ["SUMO_HOME"] = r"C:\Simulation_Engines\SUMO"
-    else:
-        os.environ["SUMO_HOME"] = r"E:\Simulation_Engines\SUMO"
+from runtime_paths import configure_sumo_environment, configured_path
 
-for base in [r"C:\Simulation_Engines\CARLA_0.9.15", r"E:\Simulation_Engines\CARLA_0.9.15"]:
-    sumo_bridge_dir = os.path.join(base, "Co-Simulation", "Sumo")
-    if os.path.exists(sumo_bridge_dir) and sumo_bridge_dir not in sys.path:
-        sys.path.insert(0, sumo_bridge_dir)
+CARLA_ROOT = configured_path("CARLA_ROOT")
+SUMO_HOME = configure_sumo_environment()
+
+sumo_bridge_dir = str(CARLA_ROOT / "Co-Simulation" / "Sumo")
+for module_dir in (sumo_bridge_dir, str(SUMO_HOME / "tools")):
+    if module_dir not in sys.path:
+        sys.path.insert(0, module_dir)
 sys.path.insert(0, os.path.abspath("."))
 
 import carla
@@ -54,9 +53,7 @@ def ensure_carla_running() -> None:
         pass
 
     print("[Live Monitor] CARLA server not detected on port 2000. Launching CARLA...")
-    carla_dir = r"C:\Simulation_Engines\CARLA_0.9.15"
-    if not os.path.exists(carla_dir):
-        carla_dir = r"E:\Simulation_Engines\CARLA_0.9.15"
+    carla_dir = str(CARLA_ROOT)
     carla_exe = os.path.join(carla_dir, "CarlaUE4.exe")
     DETACHED = 0x00000008
     NEW_GROUP = 0x00000200
@@ -387,4 +384,3 @@ def run_live_watch(
 
 if __name__ == "__main__":
     run_live_watch()
-

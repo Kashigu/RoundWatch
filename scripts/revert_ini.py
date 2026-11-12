@@ -1,4 +1,6 @@
-path = r"E:\Simulation_Engines\CARLA_0.9.15\CarlaUE4\Config\DefaultEngine.ini"
+from runtime_paths import configured_path
+
+path = configured_path("CARLA_ROOT") / "CarlaUE4" / "Config" / "DefaultEngine.ini"
 
 with open(path, "r", encoding="utf-8") as f:
     text = f.read()
@@ -9,4 +11,3 @@ with open(path, "w", encoding="utf-8") as f:
     f.write(text)
 
 print("Reverted DefaultEngine.ini to original Town10HD_Opt!")
-

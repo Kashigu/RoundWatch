@@ -26,6 +26,7 @@ wheels/
 env/
 venv/
 ENV/
+.env
 
 # IDE & OS
 .idea/
@@ -48,4 +49,3 @@ models/*.onnx
 .pytest_cache/
 .coverage
 htmlcov/
-

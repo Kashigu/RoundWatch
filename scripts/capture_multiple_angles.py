@@ -20,7 +20,9 @@ import numpy as np
 import cv2
 
 # Ensure CARLA egg / python path
-carla_root = r"E:\Simulation_Engines\CARLA_0.9.15"
+from runtime_paths import artifact_directory, configured_path
+
+carla_root = str(configured_path("CARLA_ROOT"))
 
 def is_carla_running(host="127.0.0.1", port=2000):
     try:
@@ -163,7 +165,7 @@ def main():
 
     output_dir = Path("data/angles")
     output_dir.mkdir(parents=True, exist_ok=True)
-    artifact_dir = Path(r"C:\Users\orlan\.gemini\antigravity\brain\dc5e9231-1ac9-4f55-b832-205cbb1301e5")
+    artifact_dir = artifact_directory()
 
     captured_frames = []
 
@@ -217,4 +219,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
