@@ -62,3 +62,24 @@ python scripts/test_carla_connection.py
 ```powershell
 python -m pytest -v
 ```
+
+## 4. YOLO Detection Accuracy Benchmark
+
+With CARLA running, capture 60 seconds of CARLA/SUMO traffic and export one
+south-camera frame per second with simulator-generated YOLO labels:
+
+```powershell
+python -m scripts.capture_yolo_benchmark
+```
+
+The recording is saved under `data/recordings`; sampled images, labels, and
+`dataset.yaml` are written under `data/yolo_benchmark/val`. The labels use COCO
+class IDs (car `2`, motorcycle `3`, bus `5`, truck `7`) to match pretrained
+YOLOv8 weights.
+
+The raw simulator boxes are projected 3D hulls that are loose, can lag the
+video by a tick, and include vehicles hidden behind the central monument. By
+default the exporter fits each box to the visible vehicle pixels (background
+subtraction against the median frame of the static camera) and drops labels
+with no visible pixels. Pass `--no-refine` to `scripts/export_yolo_benchmark.py`
+to keep the raw projected boxes.

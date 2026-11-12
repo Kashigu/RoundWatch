@@ -38,6 +38,7 @@ Thumbs.db
 
 # Project generated data & large media
 data/recordings/
+data/yolo_benchmark/
 data/mock/*.mp4
 output/
 models/*.pt
