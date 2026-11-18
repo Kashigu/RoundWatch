@@ -114,10 +114,10 @@ def run_full_pipeline(
         min_hits=3,
     )
 
-    # 4. YOLOv8 + BoT-SORT per camera (one instance each: BoT-SORT state is per stream)
-    print("[Pipeline] Initializing YOLOv8 + BoT-SORT (South & North) on CUDA...")
-    detector_s = VehicleDetector(model_name="yolov8s.pt", confidence_thresh=0.25, device="cuda:0")
-    detector_n = VehicleDetector(model_name="yolov8s.pt", confidence_thresh=0.25, device="cuda:0")
+    # 4. YOLO11s + BoT-SORT per camera (model chosen by docs/benchmark_results/clear_noon_02) (one instance each: BoT-SORT state is per stream)
+    print("[Pipeline] Initializing YOLO11s + BoT-SORT (South & North) on CUDA...")
+    detector_s = VehicleDetector(model_name="yolo11s.pt", confidence_thresh=0.25, device="cuda:0")
+    detector_n = VehicleDetector(model_name="yolo11s.pt", confidence_thresh=0.25, device="cuda:0")
 
     print("[Pipeline] Loading AI Compliance Classifier...")
     classifier = TrajectoryClassifier(model_path=model_path, geometry=geom)

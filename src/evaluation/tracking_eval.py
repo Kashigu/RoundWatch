@@ -41,7 +41,7 @@ def assign(cost: np.ndarray, limit: float) -> List[Tuple[int, int]]:
 
 @dataclass
 class EvalConfig:
-    model: str = "yolov8s.pt"
+    model: str = "yolo11s.pt"
     res: Optional[Tuple[int, int]] = None      # resize frames to (w, h); None = recorded resolution
     imgsz: Optional[int] = None                # YOLO inference size; None = detector default
     conf: float = 0.25

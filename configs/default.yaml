@@ -41,8 +41,8 @@ camera:
   height_ablation_levels: [10.0, 12.0, 14.0]
 
 perception:
-  model_type: "yolov8n"
-  weights_path: "models/yolov8n.pt"
+  model_type: "yolo11s"
+  weights_path: "yolo11s.pt"
   confidence_threshold: 0.35
   iou_threshold: 0.50
   target_classes:

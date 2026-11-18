@@ -50,5 +50,5 @@ The data flow runs **simulation → perception → compliance → visualization 
 ## Repo conventions
 
 - `scripts/` contains real entry points (`run_pipeline.py`, `watch_live_simulation.py`, `view_live.py`, `train_classifier.py`, `calibrate_homography.py`) mixed with many one-off inspect/debug/test probes. `scratch/` contains throwaway experiments, some with hard-coded paths from other machines. Files in either folder named `test_*.py` are **not** pytest tests; the real test suite is `tests/`.
-- `data/recordings/`, `output/`, `data/mock/*.mp4` and all `*.pt` weights are gitignored. `yolov8n.pt`/`yolov8s.pt` sit in the repo root, and the pipeline loads `yolov8s.pt` on `cuda:0`.
+- `data/recordings/`, `output/`, `data/mock/*.mp4` and all `*.pt` weights are gitignored. YOLO weights (`yolov8*.pt`, `yolo11*.pt`, `yolo26*.pt`) sit in the repo root. The pipeline, the live view and the tracking evaluator load `yolo11s.pt` on `cuda:0`, the best model in `docs/benchmark_results/clear_noon_02/` (`imgsz` defaults to the frame width, at least 1280).
 - Code style: `from __future__ import annotations`, type hints, and module docstrings at the top of each file.

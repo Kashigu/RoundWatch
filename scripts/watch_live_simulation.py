@@ -144,9 +144,10 @@ def run_live_watch(
     camera_rig_north.spawn_camera(cam_pos_north, cam_rot_north)
 
     # 4. Perception & Unified Dual-Camera Tracking Engine
-    # YOLO + BoT-SORT per camera (one instance each: BoT-SORT state is per stream)
-    detector_s = VehicleDetector(model_name="yolov8n.pt", confidence_thresh=0.25, device="cuda:0")
-    detector_n = VehicleDetector(model_name="yolov8n.pt", confidence_thresh=0.25, device="cuda:0")
+    # YOLO11s + BoT-SORT per camera (one instance each: BoT-SORT state is per stream).
+    # Benchmark (docs/benchmark_results/clear_noon_02): 720p frames -> imgsz 1280, mAP50 0.818, ~15 ms/cam.
+    detector_s = VehicleDetector(model_name="yolo11s.pt", confidence_thresh=0.25, device="cuda:0")
+    detector_n = VehicleDetector(model_name="yolo11s.pt", confidence_thresh=0.25, device="cuda:0")
     tracker = DynamicMultiCameraTracker(
         cam_pos_south, cam_rot_south,
         cam_pos_north, cam_rot_north,

@@ -24,7 +24,7 @@ from src.evaluation.tracking_eval import EvalConfig, evaluate  # noqa: E402
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", default="data/eval/roundabout_2lane")
-    ap.add_argument("--model", default="yolov8s.pt")
+    ap.add_argument("--model", default="yolo11s.pt")
     ap.add_argument("--res", default="1280x720", help="resize frames before inference, e.g. 1280x720 or 1920x1080")
     ap.add_argument("--imgsz", type=int, default=None)
     ap.add_argument("--tracker-cfg", default="configs/botsort.yaml")
