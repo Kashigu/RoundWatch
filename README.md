@@ -62,3 +62,54 @@ python scripts/test_carla_connection.py
 ```powershell
 python -m pytest -v
 ```
+
+## 4. YOLO Detection Accuracy Benchmark
+
+With CARLA running (`.\scripts\start_carla.bat`), capture 60 seconds of
+CARLA/SUMO traffic and export south-camera datasets with simulator-generated
+YOLO labels:
+
+```powershell
+.\record_benchmark.bat --name clear_noon_01 --fps 1 5 20
+```
+
+Options: `--duration` (seconds, default 60), `--fps` (one or more sampling
+rates, default 1), `--camera north`, `--save-masks` (keep segmentation PNGs).
+`--name` defaults to the current date and time; an existing non-empty name is
+refused, so earlier recordings are never overwritten.
+
+The recording is saved under `data/recordings/<name>`; sampled images, labels,
+and `dataset.yaml` are written under `data/yolo_benchmark/<name>/val_<N>fps`.
+The labels use COCO
+class IDs (car `2`, motorcycle `3`, bus `5`, truck `7`) to match pretrained
+YOLOv8 weights.
+
+Labels come from an instance-segmentation camera mounted next to each RGB
+camera. It renders the same simulation tick, and its images are only used to
+compute labels, never shown to YOLO. Each box covers exactly the visible
+pixels of one vehicle. Vehicles that are hidden (e.g. behind the central
+monument) or have fewer than 25 visible pixels get no label. The recorder
+waits for the images of the exact tick whose vehicle poses it logs, so boxes
+and frames stay aligned. Pass `save_instance_masks=True` to
+`CarlaSumoCoSimulationRecorder` to also keep the segmentation frames as PNGs.
+
+Older recordings only have projected 3D-box hulls, which are loose, can lag the
+video by a tick, and include hidden vehicles. For those, the exporter
+automatically fits each box to the visible vehicle pixels (background
+subtraction against the median frame of the static camera) and drops labels
+with no visible pixels. `--refine` / `--no-refine` on
+`scripts/export_yolo_benchmark.py` force either behaviour.
+
+### Running the benchmark
+
+Validate every exported dataset of a recording (GPU if available). By default
+the benchmark compares `yolov8n`, `yolov8s`, `yolo11n` and `yolo11s` at
+1920 px; missing weights are downloaded to the project root.
+
+```powershell
+python scripts/run_yolo_benchmark.py data/yolo_benchmark/clear_noon_02
+python scripts/run_yolo_benchmark.py data/yolo_benchmark/clear_noon_02/val_20fps --models yolov8s yolo11s --imgsz 640 1280 1920
+```
+
+Results (per-run plots, `summary.json`, and `summary.md` with a per-run table
+and a model-comparison table) are written to `runs/benchmark/<name>/`.

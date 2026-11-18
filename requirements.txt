@@ -9,6 +9,8 @@ pytest>=7.4.0
 matplotlib>=3.7.0
 
 # Perception & Tracking (For Section 2)
+# Install the CUDA build of torch/torchvision, or YOLO silently runs on CPU:
+#   pip install torch==2.14.1 torchvision==0.29.2 --index-url https://download.pytorch.org/whl/cu132
 # torch
 # torchvision
 # ultralytics>=8.3.0

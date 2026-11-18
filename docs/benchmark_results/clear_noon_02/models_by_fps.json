@@ -1,0 +1,234 @@
+[
+  {
+    "dataset": "val_1fps",
+    "dataset_path": "C:\\Users\\light\\Desktop\\RoundWatch\\data\\yolo_benchmark\\clear_noon_02\\val_1fps",
+    "images": 60,
+    "model": "yolov8n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.83,
+    "R": 0.637,
+    "mAP50": 0.743,
+    "mAP50_95": 0.597,
+    "inference_ms": 12.47,
+    "total_ms": 20.32,
+    "wall_s": 9.2,
+    "per_class": {
+      "car": {
+        "P": 0.938,
+        "R": 0.547,
+        "mAP50": 0.778,
+        "mAP50_95": 0.525
+      },
+      "truck": {
+        "P": 0.722,
+        "R": 0.727,
+        "mAP50": 0.708,
+        "mAP50_95": 0.668
+      }
+    }
+  },
+  {
+    "dataset": "val_1fps",
+    "dataset_path": "C:\\Users\\light\\Desktop\\RoundWatch\\data\\yolo_benchmark\\clear_noon_02\\val_1fps",
+    "images": 60,
+    "model": "yolov8s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.979,
+    "R": 0.642,
+    "mAP50": 0.784,
+    "mAP50_95": 0.654,
+    "inference_ms": 27.12,
+    "total_ms": 33.29,
+    "wall_s": 6.7,
+    "per_class": {
+      "car": {
+        "P": 1.0,
+        "R": 0.648,
+        "mAP50": 0.895,
+        "mAP50_95": 0.672
+      },
+      "truck": {
+        "P": 0.957,
+        "R": 0.636,
+        "mAP50": 0.673,
+        "mAP50_95": 0.637
+      }
+    }
+  },
+  {
+    "dataset": "val_1fps",
+    "dataset_path": "C:\\Users\\light\\Desktop\\RoundWatch\\data\\yolo_benchmark\\clear_noon_02\\val_1fps",
+    "images": 60,
+    "model": "yolo11n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.798,
+    "R": 0.576,
+    "mAP50": 0.802,
+    "mAP50_95": 0.648,
+    "inference_ms": 13.3,
+    "total_ms": 20.42,
+    "wall_s": 6.2,
+    "per_class": {
+      "car": {
+        "P": 0.974,
+        "R": 0.335,
+        "mAP50": 0.828,
+        "mAP50_95": 0.561
+      },
+      "truck": {
+        "P": 0.623,
+        "R": 0.818,
+        "mAP50": 0.777,
+        "mAP50_95": 0.735
+      }
+    }
+  },
+  {
+    "dataset": "val_1fps",
+    "dataset_path": "C:\\Users\\light\\Desktop\\RoundWatch\\data\\yolo_benchmark\\clear_noon_02\\val_1fps",
+    "images": 60,
+    "model": "yolo11s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.845,
+    "R": 0.74,
+    "mAP50": 0.916,
+    "mAP50_95": 0.799,
+    "inference_ms": 29.08,
+    "total_ms": 35.68,
+    "wall_s": 7.0,
+    "per_class": {
+      "car": {
+        "P": 1.0,
+        "R": 0.571,
+        "mAP50": 0.942,
+        "mAP50_95": 0.744
+      },
+      "truck": {
+        "P": 0.69,
+        "R": 0.909,
+        "mAP50": 0.89,
+        "mAP50_95": 0.854
+      }
+    }
+  },
+  {
+    "dataset": "val_5fps",
+    "dataset_path": "C:\\Users\\light\\Desktop\\RoundWatch\\data\\yolo_benchmark\\clear_noon_02\\val_5fps",
+    "images": 300,
+    "model": "yolov8n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.778,
+    "R": 0.567,
+    "mAP50": 0.706,
+    "mAP50_95": 0.553,
+    "inference_ms": 11.75,
+    "total_ms": 22.49,
+    "wall_s": 26.0,
+    "per_class": {
+      "car": {
+        "P": 0.957,
+        "R": 0.587,
+        "mAP50": 0.822,
+        "mAP50_95": 0.54
+      },
+      "truck": {
+        "P": 0.599,
+        "R": 0.547,
+        "mAP50": 0.591,
+        "mAP50_95": 0.566
+      }
+    }
+  },
+  {
+    "dataset": "val_5fps",
+    "dataset_path": "C:\\Users\\light\\Desktop\\RoundWatch\\data\\yolo_benchmark\\clear_noon_02\\val_5fps",
+    "images": 300,
+    "model": "yolov8s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.974,
+    "R": 0.602,
+    "mAP50": 0.776,
+    "mAP50_95": 0.656,
+    "inference_ms": 23.18,
+    "total_ms": 28.82,
+    "wall_s": 27.9,
+    "per_class": {
+      "car": {
+        "P": 0.997,
+        "R": 0.637,
+        "mAP50": 0.877,
+        "mAP50_95": 0.658
+      },
+      "truck": {
+        "P": 0.951,
+        "R": 0.567,
+        "mAP50": 0.675,
+        "mAP50_95": 0.654
+      }
+    }
+  },
+  {
+    "dataset": "val_5fps",
+    "dataset_path": "C:\\Users\\light\\Desktop\\RoundWatch\\data\\yolo_benchmark\\clear_noon_02\\val_5fps",
+    "images": 300,
+    "model": "yolo11n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.804,
+    "R": 0.438,
+    "mAP50": 0.727,
+    "mAP50_95": 0.587,
+    "inference_ms": 12.08,
+    "total_ms": 17.64,
+    "wall_s": 24.4,
+    "per_class": {
+      "car": {
+        "P": 0.989,
+        "R": 0.309,
+        "mAP50": 0.814,
+        "mAP50_95": 0.566
+      },
+      "truck": {
+        "P": 0.62,
+        "R": 0.567,
+        "mAP50": 0.64,
+        "mAP50_95": 0.608
+      }
+    }
+  },
+  {
+    "dataset": "val_5fps",
+    "dataset_path": "C:\\Users\\light\\Desktop\\RoundWatch\\data\\yolo_benchmark\\clear_noon_02\\val_5fps",
+    "images": 300,
+    "model": "yolo11s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.797,
+    "R": 0.68,
+    "mAP50": 0.843,
+    "mAP50_95": 0.738,
+    "inference_ms": 24.29,
+    "total_ms": 29.92,
+    "wall_s": 28.1,
+    "per_class": {
+      "car": {
+        "P": 0.989,
+        "R": 0.627,
+        "mAP50": 0.922,
+        "mAP50_95": 0.731
+      },
+      "truck": {
+        "P": 0.606,
+        "R": 0.733,
+        "mAP50": 0.764,
+        "mAP50_95": 0.745
+      }
+    }
+  }
+]
