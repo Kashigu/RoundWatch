@@ -37,6 +37,7 @@ from sumo_integration.constants import INVALID_ACTOR_ID
 from sumo_integration.sumo_simulation import SumoSimulation
 
 from src.simulation.camera_rig import CameraRig
+from src.simulation.conditions import PoleSway, make_weather, weather_to_dict
 from src.simulation.instance_labels import match_vehicle_instances, vehicle_instance_map
 
 
@@ -54,6 +55,9 @@ class CarlaSumoCoSimulationRecorder:
         instance_labels: bool = True,
         save_instance_masks: bool = False,
         min_visible_pixels: int = 25,
+        weather: str = "ClearNoon",
+        camera_shake_deg: float = 0.0,
+        shake_seed: int = 0,
     ) -> None:
         """
         Args:
@@ -63,6 +67,11 @@ class CarlaSumoCoSimulationRecorder:
             save_instance_masks: Also write the raw instance-segmentation frames
                 as lossless PNGs, so labels can be re-derived later.
             min_visible_pixels: Vehicles with fewer visible pixels get no label.
+            weather: CARLA built-in weather preset name or a custom one from
+                ``src.simulation.conditions.WEATHER_PRESETS`` (e.g. ``Storm``).
+            camera_shake_deg: Peak wind sway of the pole cameras in degrees
+                (0 = static). See ``PoleSway``.
+            shake_seed: Seed of the sway model (reproducible recordings).
         """
         self.sumo_cfg = os.path.abspath(sumo_cfg)
         self.carla_host = carla_host
@@ -76,6 +85,11 @@ class CarlaSumoCoSimulationRecorder:
         self.save_instance_masks = save_instance_masks and instance_labels
         self.min_visible_pixels = min_visible_pixels
         self.frame_timeout = 10.0  # seconds to wait for a tick's camera images
+        self.weather_name = weather
+        self.camera_shake_deg = camera_shake_deg
+        self.shake_seed = shake_seed
+        # camera name -> (rig, base position, base rotation, sway model)
+        self._sway: Dict[str, Tuple[CameraRig, Tuple[float, float, float], Tuple[float, float, float], PoleSway]] = {}
 
         self.carla_sim: Optional[CarlaSimulation] = None
         self.sumo_sim: Optional[SumoSimulation] = None
@@ -110,8 +124,9 @@ class CarlaSumoCoSimulationRecorder:
                 pass
         self.world.tick()
 
-        # Set clear noon weather for optimal vision illumination
-        self.world.set_weather(carla.WeatherParameters.ClearNoon)
+        self.weather = make_weather(self.weather_name)
+        self.world.set_weather(self.weather)
+        print(f"[Co-Simulation] Weather: {self.weather_name} | camera shake: {self.camera_shake_deg:g} deg")
 
         print("[Co-Simulation] Starting SUMO co-simulation instance...")
         self.sumo_sim = SumoSimulation(
@@ -150,6 +165,13 @@ class CarlaSumoCoSimulationRecorder:
         )
 
         self.camera_rig = self.camera_rig_south
+        if self.camera_shake_deg > 0:
+            for i, (name, rig, pos, rot) in enumerate((
+                ("south", self.camera_rig_south, cam_pos_south, cam_rot_south),
+                ("north", self.camera_rig_north, cam_pos_north, cam_rot_north),
+            )):
+                sway = PoleSway(amplitude_deg=self.camera_shake_deg, pole_height=pos[2], seed=self.shake_seed + i)
+                self._sway[name] = (rig, pos, rot, sway)
         print(f"[Co-Simulation] Mounted Dual Lamp Pole Cameras at {self.camera_height}m (South & North)")
 
     def run_recording(self, duration_sec: float = 45.0) -> Tuple[Path, Path]:
@@ -184,7 +206,8 @@ class CarlaSumoCoSimulationRecorder:
             # 1. Advance SUMO simulation
             self.sumo_sim.tick()
 
-            # 2. Advance CARLA simulation synchronously
+            # 2. Pole sway for this tick (RGB + segmentation move together), then advance CARLA
+            self._apply_sway(timestamp)
             self.carla_sim.tick()
             sim_frame = self.world.get_snapshot().frame
 
@@ -256,6 +279,15 @@ class CarlaSumoCoSimulationRecorder:
 
         with open(json_path, "w", encoding="utf-8") as f:
             json.dump(gt_records, f, indent=2)
+        conditions = {
+            "weather": self.weather_name,
+            "weather_parameters": weather_to_dict(self.weather),
+            "camera_shake_deg": self.camera_shake_deg,
+            "shake_seed": self.shake_seed,
+            "duration_sec": duration_sec,
+            "fps": self.fps,
+        }
+        (self.output_dir / "conditions.json").write_text(json.dumps(conditions, indent=2), encoding="utf-8")
 
         tot_time = time.time() - t0
         print("\n" + "=" * 60)
@@ -280,6 +312,11 @@ class CarlaSumoCoSimulationRecorder:
                       "(diagnostic only; matching uses box overlap)")
         print("=" * 60)
         return video_path, json_path
+
+    def _apply_sway(self, t: float) -> None:
+        for rig, pos, rot, sway in self._sway.values():
+            dp, dyaw, dr, dx, dy, dz = sway.offsets(t)
+            rig.set_pose((pos[0] + dx, pos[1] + dy, pos[2] + dz), (rot[0] + dp, rot[1] + dyaw, rot[2] + dr))
 
     def _fetch_frames(
         self, rig: Optional[CameraRig], sim_frame: int, stats: Dict[str, int]

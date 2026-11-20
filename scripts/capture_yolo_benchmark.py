@@ -6,6 +6,8 @@ Each run gets its own folder, so earlier recordings are never overwritten:
     data/yolo_benchmark/<name>/val_<N>fps/   images, labels, dataset.yaml
 
 Labels come from the instance-segmentation camera (exact visible boxes).
+``--weather`` and ``--shake`` set the test conditions (rain, fog, wind-driven pole sway);
+the segmentation camera sways with the RGB camera, so labels stay exact.
 CARLA must already be running (scripts/start_carla.bat).
 """
 
@@ -43,6 +45,18 @@ def parse_args() -> argparse.Namespace:
         help="Also save the instance-segmentation frames as PNGs (large)",
     )
     parser.add_argument(
+        "--weather",
+        default="ClearNoon",
+        help="CARLA weather preset (ClearNoon, HardRainNoon, WetCloudyNoon, ...) or custom Storm / Fog",
+    )
+    parser.add_argument(
+        "--shake",
+        type=float,
+        default=0.0,
+        help="Peak wind sway of the pole cameras in degrees (0 = static; ~0.5 strong wind)",
+    )
+    parser.add_argument("--shake-seed", type=int, default=0, help="Seed of the camera sway model")
+    parser.add_argument(
         "--projected-labels",
         action="store_true",
         help="Use the old projected 3D-box labels instead of instance segmentation",
@@ -67,6 +81,9 @@ def main() -> None:
         output_dir=str(recording_dir),
         instance_labels=not args.projected_labels,
         save_instance_masks=args.save_masks,
+        weather=args.weather,
+        camera_shake_deg=args.shake,
+        shake_seed=args.shake_seed,
     )
     try:
         recorder.setup()

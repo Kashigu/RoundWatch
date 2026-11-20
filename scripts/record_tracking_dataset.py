@@ -15,6 +15,9 @@ FRAME FORMAT: {"frame": i, "t": s, "vehicles": [{"sumo_id", "carla_id", "type", 
 
 Usage (CARLA server running):
     .venv310\\Scripts\\python.exe scripts/record_tracking_dataset.py --seconds 90
+    # condition clips for the YOLO benchmark: real rain / night, one camera, traffic fast-forwarded
+    .venv310\\Scripts\\python.exe scripts/record_tracking_dataset.py --weather HardRainNoon --cameras south \\
+        --seconds 30 --sumo-warmup 20 --route-seed 101 --out data/eval/cond_s101_HardRainNoon
 """
 
 from __future__ import annotations
@@ -46,6 +49,7 @@ from sumo_integration.carla_simulation import CarlaSimulation  # noqa: E402
 from sumo_integration.constants import INVALID_ACTOR_ID  # noqa: E402
 from sumo_integration.sumo_simulation import SumoSimulation  # noqa: E402
 
+from src.simulation.conditions import make_weather, needs_headlights, weather_to_dict  # noqa: E402
 from src.simulation.maps import dress_world, get_map, load_carla_world  # noqa: E402
 
 
@@ -161,13 +165,22 @@ def main() -> int:
     ap.add_argument("--skip-seconds", type=float, default=3.0, help="warm-up before recording starts")
     ap.add_argument("--route-seed", type=int, default=None,
                     help="regenerate the SUMO demand with this seed (different traffic, e.g. for training data)")
-    ap.add_argument("--weather", default="ClearNoon", help="carla.WeatherParameters preset, e.g. CloudyNoon, WetNoon, ClearSunset")
+    ap.add_argument("--weather", default="ClearNoon",
+                    help="CARLA preset (CloudyNoon, HardRainNoon, ClearNight, HardRainNight...) or custom "
+                         "Storm / HeavyRain / Dusk / Fog from src/simulation/conditions.py")
+    ap.add_argument("--cameras", nargs="+", choices=("south", "north"), default=["south", "north"],
+                    help="cameras to record (one camera roughly halves the render time)")
+    ap.add_argument("--street-lights", choices=("auto", "on", "off"), default="auto",
+                    help="map street/building lights (only maps that have them, e.g. town03); "
+                         "auto = on whenever vehicles need headlights")
+    ap.add_argument("--sumo-warmup", type=float, default=0.0,
+                    help="seconds of SUMO-only traffic fast-forward before CARLA starts rendering")
     args = ap.parse_args()
 
     spec = get_map(args.map)
     W, H = (int(v) for v in args.res.lower().split("x"))
     out = Path(args.out or f"data/eval/{spec.name}")
-    for cam in ("south", "north"):
+    for cam in args.cameras:
         (out / cam).mkdir(parents=True, exist_ok=True)
     dt = 0.05
 
@@ -177,7 +190,18 @@ def main() -> int:
     time.sleep(3.0)
     carla_sim = CarlaSimulation("127.0.0.1", 2000, dt)
     world = client.get_world()
-    world.set_weather(getattr(carla.WeatherParameters, args.weather))
+    weather = make_weather(args.weather)
+    world.set_weather(weather)
+    headlights = needs_headlights(weather)
+    light_state = carla.VehicleLightState(carla.VehicleLightState.Position | carla.VehicleLightState.LowBeam)
+    street_on = args.street_lights == "on" or (args.street_lights == "auto" and headlights)
+    lm = world.get_lightmanager()
+    lm.set_day_night_cycle(False)  # keep CARLA from switching the lights back with the weather
+    map_lights = lm.get_all_lights(carla.LightGroup.Street) + lm.get_all_lights(carla.LightGroup.Building)
+    if map_lights:
+        (lm.turn_on if street_on else lm.turn_off)(map_lights)
+    print(f"[record] weather {args.weather} | headlights {headlights} | "
+          f"map lights {'on' if street_on else 'off'} ({len(map_lights)} available)")
     dress_world(client, world, spec)
 
     sumo_cfg = spec.sumo_cfg
@@ -193,12 +217,13 @@ def main() -> int:
     BridgeHelper.blueprint_library = world.get_blueprint_library()
     BridgeHelper.offset = sumo_sim.get_net_offset()
 
-    cams = {"south": SyncCamera(world, spec.cam_south, W, H), "north": SyncCamera(world, spec.cam_north, W, H)}
+    poses = {"south": spec.cam_south, "north": spec.cam_north}
+    cams = {name: SyncCamera(world, poses[name], W, H) for name in args.cameras}
     (out / "meta.json").write_text(json.dumps({
         "map": spec.name, "fps": 1.0 / dt, "width": W, "height": H, "fov": 90.0,
-        "sumo_cfg": sumo_cfg, "weather": args.weather,
-        "cameras": {"south": {"position": spec.cam_south.position, "rotation": spec.cam_south.rotation},
-                    "north": {"position": spec.cam_north.position, "rotation": spec.cam_north.rotation}},
+        "sumo_cfg": sumo_cfg, "weather": args.weather, "weather_parameters": weather_to_dict(weather),
+        "headlights": headlights, "street_lights": bool(street_on and map_lights), "sumo_warmup_s": args.sumo_warmup,
+        "cameras": {name: {"position": poses[name].position, "rotation": poses[name].rotation} for name in cams},
     }, indent=2), encoding="utf-8")
 
     sumo2carla: dict = {}
@@ -206,6 +231,10 @@ def main() -> int:
     gt_f = open(out / "gt.jsonl", "w", encoding="utf-8")
     steps = int((args.seconds + args.skip_seconds) / dt)
     rec = 0
+    # Fast-forward the traffic in SUMO alone, so the recording does not start on an empty road.
+    # Vehicles already on the road are spawned in CARLA on the first rendered tick.
+    for _ in range(int(args.sumo_warmup / dt)):
+        sumo_sim.tick()
     t0 = time.time()
     try:
         for step in range(steps):
@@ -222,6 +251,10 @@ def main() -> int:
                     c_id = carla_sim.spawn_actor(bp, BridgeHelper.get_carla_transform(s_actor.transform, s_actor.extent))
                 if c_id != INVALID_ACTOR_ID:
                     sumo2carla[s_id] = c_id
+                    if headlights:
+                        actor = world.get_actor(c_id)
+                        if actor is not None:
+                            actor.set_light_state(light_state)
                 else:
                     sumo_sim.unsubscribe(s_id)
             for s_id in sumo_sim.destroyed_actors:

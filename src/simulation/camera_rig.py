@@ -158,6 +158,24 @@ class CameraRig:
 
         return self.sensor_actor
 
+    def set_pose(
+        self, position: Tuple[float, float, float], rotation: Tuple[float, float, float]
+    ) -> None:
+        """Move the RGB camera and its instance-segmentation twin together (e.g. pole sway).
+
+        In synchronous mode the new pose is used for the next world tick, so both
+        images and the labels derived from them stay aligned.
+        """
+        if carla is None or self.sensor_actor is None:
+            return
+        transform = carla.Transform(
+            carla.Location(x=position[0], y=position[1], z=position[2]),
+            carla.Rotation(pitch=rotation[0], yaw=rotation[1], roll=rotation[2]),
+        )
+        self.sensor_actor.set_transform(transform)
+        if self.instance_sensor is not None:
+            self.instance_sensor.set_transform(transform)
+
     def get_frame(self, frame_id: Optional[int] = None, timeout: float = 2.0) -> Optional[np.ndarray]:
         """Fetch frame synchronized to specific simulation tick."""
         if frame_id is None:

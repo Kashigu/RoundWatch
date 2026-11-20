@@ -1,0 +1,1394 @@
+[
+  {
+    "dataset": "cond_town03_ClearNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_ClearNight",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.342,
+    "R": 0.101,
+    "mAP50": 0.141,
+    "mAP50_95": 0.104,
+    "inference_ms": 5.77,
+    "total_ms": 9.06,
+    "wall_s": 19.6,
+    "per_class": {
+      "car": {
+        "P": 0.684,
+        "R": 0.202,
+        "mAP50": 0.27,
+        "mAP50_95": 0.202
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.011,
+        "mAP50_95": 0.006
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_ClearNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_ClearNight",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.512,
+    "R": 0.631,
+    "mAP50": 0.28,
+    "mAP50_95": 0.19,
+    "inference_ms": 10.75,
+    "total_ms": 16.17,
+    "wall_s": 16.1,
+    "per_class": {
+      "car": {
+        "P": 0.881,
+        "R": 0.263,
+        "mAP50": 0.378,
+        "mAP50_95": 0.267
+      },
+      "truck": {
+        "P": 0.144,
+        "R": 1.0,
+        "mAP50": 0.181,
+        "mAP50_95": 0.113
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_ClearNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_ClearNight",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.442,
+    "R": 0.203,
+    "mAP50": 0.273,
+    "mAP50_95": 0.197,
+    "inference_ms": 10.5,
+    "total_ms": 12.89,
+    "wall_s": 15.5,
+    "per_class": {
+      "car": {
+        "P": 0.884,
+        "R": 0.407,
+        "mAP50": 0.518,
+        "mAP50_95": 0.381
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.028,
+        "mAP50_95": 0.014
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_ClearNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_ClearNight",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.769,
+    "R": 0.404,
+    "mAP50": 0.642,
+    "mAP50_95": 0.389,
+    "inference_ms": 22.99,
+    "total_ms": 27.94,
+    "wall_s": 17.9,
+    "per_class": {
+      "car": {
+        "P": 1.0,
+        "R": 0.309,
+        "mAP50": 0.622,
+        "mAP50_95": 0.439
+      },
+      "truck": {
+        "P": 0.537,
+        "R": 0.5,
+        "mAP50": 0.662,
+        "mAP50_95": 0.339
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_ClearNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_ClearNight",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.494,
+    "R": 0.128,
+    "mAP50": 0.219,
+    "mAP50_95": 0.166,
+    "inference_ms": 4.84,
+    "total_ms": 7.42,
+    "wall_s": 14.6,
+    "per_class": {
+      "car": {
+        "P": 0.989,
+        "R": 0.255,
+        "mAP50": 0.432,
+        "mAP50_95": 0.331
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.007,
+        "mAP50_95": 0.001
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_ClearNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_ClearNight",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.449,
+    "R": 0.148,
+    "mAP50": 0.26,
+    "mAP50_95": 0.192,
+    "inference_ms": 11.48,
+    "total_ms": 16.31,
+    "wall_s": 16.2,
+    "per_class": {
+      "car": {
+        "P": 0.898,
+        "R": 0.297,
+        "mAP50": 0.479,
+        "mAP50_95": 0.361
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.04,
+        "mAP50_95": 0.022
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_ClearNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_ClearNight",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.48,
+    "R": 0.27,
+    "mAP50": 0.326,
+    "mAP50_95": 0.254,
+    "inference_ms": 10.33,
+    "total_ms": 12.7,
+    "wall_s": 15.5,
+    "per_class": {
+      "car": {
+        "P": 0.961,
+        "R": 0.54,
+        "mAP50": 0.649,
+        "mAP50_95": 0.507
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.004,
+        "mAP50_95": 0.001
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_ClearNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_ClearNight",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.593,
+    "R": 0.487,
+    "mAP50": 0.41,
+    "mAP50_95": 0.306,
+    "inference_ms": 23.32,
+    "total_ms": 28.61,
+    "wall_s": 18.5,
+    "per_class": {
+      "car": {
+        "P": 0.952,
+        "R": 0.474,
+        "mAP50": 0.641,
+        "mAP50_95": 0.506
+      },
+      "truck": {
+        "P": 0.234,
+        "R": 0.5,
+        "mAP50": 0.179,
+        "mAP50_95": 0.106
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_ClearNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_ClearNoon",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.455,
+    "R": 0.287,
+    "mAP50": 0.403,
+    "mAP50_95": 0.24,
+    "inference_ms": 5.08,
+    "total_ms": 7.65,
+    "wall_s": 14.8,
+    "per_class": {
+      "car": {
+        "P": 0.911,
+        "R": 0.574,
+        "mAP50": 0.795,
+        "mAP50_95": 0.474
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.01,
+        "mAP50_95": 0.006
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_ClearNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_ClearNoon",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.511,
+    "R": 0.841,
+    "mAP50": 0.478,
+    "mAP50_95": 0.337,
+    "inference_ms": 11.82,
+    "total_ms": 16.62,
+    "wall_s": 16.1,
+    "per_class": {
+      "car": {
+        "P": 0.95,
+        "R": 0.681,
+        "mAP50": 0.856,
+        "mAP50_95": 0.614
+      },
+      "truck": {
+        "P": 0.072,
+        "R": 1.0,
+        "mAP50": 0.1,
+        "mAP50_95": 0.06
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_ClearNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_ClearNoon",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.528,
+    "R": 0.876,
+    "mAP50": 0.514,
+    "mAP50_95": 0.35,
+    "inference_ms": 10.25,
+    "total_ms": 12.85,
+    "wall_s": 15.4,
+    "per_class": {
+      "car": {
+        "P": 0.944,
+        "R": 0.753,
+        "mAP50": 0.846,
+        "mAP50_95": 0.587
+      },
+      "truck": {
+        "P": 0.111,
+        "R": 1.0,
+        "mAP50": 0.181,
+        "mAP50_95": 0.113
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_ClearNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_ClearNoon",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.566,
+    "R": 0.632,
+    "mAP50": 0.572,
+    "mAP50_95": 0.438,
+    "inference_ms": 23.12,
+    "total_ms": 27.96,
+    "wall_s": 18.0,
+    "per_class": {
+      "car": {
+        "P": 0.985,
+        "R": 0.764,
+        "mAP50": 0.896,
+        "mAP50_95": 0.702
+      },
+      "truck": {
+        "P": 0.147,
+        "R": 0.5,
+        "mAP50": 0.249,
+        "mAP50_95": 0.174
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_ClearNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_ClearNoon",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.482,
+    "R": 0.221,
+    "mAP50": 0.408,
+    "mAP50_95": 0.267,
+    "inference_ms": 5.3,
+    "total_ms": 7.85,
+    "wall_s": 14.5,
+    "per_class": {
+      "car": {
+        "P": 0.965,
+        "R": 0.442,
+        "mAP50": 0.794,
+        "mAP50_95": 0.519
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.022,
+        "mAP50_95": 0.014
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_ClearNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_ClearNoon",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.493,
+    "R": 0.774,
+    "mAP50": 0.415,
+    "mAP50_95": 0.312,
+    "inference_ms": 10.99,
+    "total_ms": 15.99,
+    "wall_s": 16.1,
+    "per_class": {
+      "car": {
+        "P": 0.954,
+        "R": 0.548,
+        "mAP50": 0.79,
+        "mAP50_95": 0.598
+      },
+      "truck": {
+        "P": 0.033,
+        "R": 1.0,
+        "mAP50": 0.039,
+        "mAP50_95": 0.026
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_ClearNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_ClearNoon",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.481,
+    "R": 0.655,
+    "mAP50": 0.458,
+    "mAP50_95": 0.35,
+    "inference_ms": 10.24,
+    "total_ms": 12.85,
+    "wall_s": 15.4,
+    "per_class": {
+      "car": {
+        "P": 0.945,
+        "R": 0.81,
+        "mAP50": 0.887,
+        "mAP50_95": 0.68
+      },
+      "truck": {
+        "P": 0.017,
+        "R": 0.5,
+        "mAP50": 0.028,
+        "mAP50_95": 0.02
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_ClearNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_ClearNoon",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.501,
+    "R": 0.913,
+    "mAP50": 0.494,
+    "mAP50_95": 0.403,
+    "inference_ms": 23.48,
+    "total_ms": 28.43,
+    "wall_s": 17.9,
+    "per_class": {
+      "car": {
+        "P": 0.969,
+        "R": 0.825,
+        "mAP50": 0.947,
+        "mAP50_95": 0.771
+      },
+      "truck": {
+        "P": 0.033,
+        "R": 1.0,
+        "mAP50": 0.041,
+        "mAP50_95": 0.034
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_Dusk",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_Dusk",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.47,
+    "R": 0.257,
+    "mAP50": 0.329,
+    "mAP50_95": 0.227,
+    "inference_ms": 5.6,
+    "total_ms": 8.35,
+    "wall_s": 5.1,
+    "per_class": {
+      "car": {
+        "P": 0.94,
+        "R": 0.513,
+        "mAP50": 0.657,
+        "mAP50_95": 0.454
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_Dusk",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_Dusk",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.513,
+    "R": 0.83,
+    "mAP50": 0.401,
+    "mAP50_95": 0.282,
+    "inference_ms": 10.77,
+    "total_ms": 15.28,
+    "wall_s": 6.0,
+    "per_class": {
+      "car": {
+        "P": 0.982,
+        "R": 0.659,
+        "mAP50": 0.749,
+        "mAP50_95": 0.526
+      },
+      "truck": {
+        "P": 0.043,
+        "R": 1.0,
+        "mAP50": 0.054,
+        "mAP50_95": 0.038
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_Dusk",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_Dusk",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.509,
+    "R": 0.599,
+    "mAP50": 0.436,
+    "mAP50_95": 0.288,
+    "inference_ms": 9.44,
+    "total_ms": 11.89,
+    "wall_s": 5.5,
+    "per_class": {
+      "car": {
+        "P": 0.967,
+        "R": 0.698,
+        "mAP50": 0.792,
+        "mAP50_95": 0.531
+      },
+      "truck": {
+        "P": 0.051,
+        "R": 0.5,
+        "mAP50": 0.08,
+        "mAP50_95": 0.044
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_Dusk",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_Dusk",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.718,
+    "R": 0.853,
+    "mAP50": 0.921,
+    "mAP50_95": 0.686,
+    "inference_ms": 22.41,
+    "total_ms": 26.89,
+    "wall_s": 8.1,
+    "per_class": {
+      "car": {
+        "P": 1.0,
+        "R": 0.706,
+        "mAP50": 0.847,
+        "mAP50_95": 0.651
+      },
+      "truck": {
+        "P": 0.437,
+        "R": 1.0,
+        "mAP50": 0.995,
+        "mAP50_95": 0.721
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_Dusk",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_Dusk",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.492,
+    "R": 0.181,
+    "mAP50": 0.29,
+    "mAP50_95": 0.23,
+    "inference_ms": 4.43,
+    "total_ms": 7.3,
+    "wall_s": 5.0,
+    "per_class": {
+      "car": {
+        "P": 0.984,
+        "R": 0.363,
+        "mAP50": 0.568,
+        "mAP50_95": 0.456
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.012,
+        "mAP50_95": 0.004
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_Dusk",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_Dusk",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.464,
+    "R": 0.234,
+    "mAP50": 0.383,
+    "mAP50_95": 0.284,
+    "inference_ms": 10.98,
+    "total_ms": 15.7,
+    "wall_s": 6.6,
+    "per_class": {
+      "car": {
+        "P": 0.928,
+        "R": 0.469,
+        "mAP50": 0.747,
+        "mAP50_95": 0.551
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.02,
+        "mAP50_95": 0.016
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_Dusk",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_Dusk",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.508,
+    "R": 0.91,
+    "mAP50": 0.476,
+    "mAP50_95": 0.348,
+    "inference_ms": 9.29,
+    "total_ms": 11.66,
+    "wall_s": 5.7,
+    "per_class": {
+      "car": {
+        "P": 0.986,
+        "R": 0.82,
+        "mAP50": 0.915,
+        "mAP50_95": 0.672
+      },
+      "truck": {
+        "P": 0.031,
+        "R": 1.0,
+        "mAP50": 0.037,
+        "mAP50_95": 0.023
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_Dusk",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_Dusk",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.519,
+    "R": 0.884,
+    "mAP50": 0.484,
+    "mAP50_95": 0.38,
+    "inference_ms": 22.56,
+    "total_ms": 27.07,
+    "wall_s": 8.0,
+    "per_class": {
+      "car": {
+        "P": 0.971,
+        "R": 0.769,
+        "mAP50": 0.891,
+        "mAP50_95": 0.703
+      },
+      "truck": {
+        "P": 0.066,
+        "R": 1.0,
+        "mAP50": 0.077,
+        "mAP50_95": 0.056
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_HardRainNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_HardRainNight",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.012,
+    "R": 0.033,
+    "mAP50": 0.004,
+    "mAP50_95": 0.002,
+    "inference_ms": 5.16,
+    "total_ms": 7.72,
+    "wall_s": 14.8,
+    "per_class": {
+      "car": {
+        "P": 0.023,
+        "R": 0.065,
+        "mAP50": 0.007,
+        "mAP50_95": 0.003
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_HardRainNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_HardRainNight",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.014,
+    "R": 0.033,
+    "mAP50": 0.003,
+    "mAP50_95": 0.001,
+    "inference_ms": 11.22,
+    "total_ms": 15.95,
+    "wall_s": 15.9,
+    "per_class": {
+      "car": {
+        "P": 0.029,
+        "R": 0.065,
+        "mAP50": 0.007,
+        "mAP50_95": 0.002
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_HardRainNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_HardRainNight",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.03,
+    "R": 0.077,
+    "mAP50": 0.019,
+    "mAP50_95": 0.009,
+    "inference_ms": 9.58,
+    "total_ms": 11.92,
+    "wall_s": 15.1,
+    "per_class": {
+      "car": {
+        "P": 0.061,
+        "R": 0.155,
+        "mAP50": 0.038,
+        "mAP50_95": 0.019
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_HardRainNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_HardRainNight",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.021,
+    "R": 0.083,
+    "mAP50": 0.016,
+    "mAP50_95": 0.007,
+    "inference_ms": 23.19,
+    "total_ms": 28.24,
+    "wall_s": 17.9,
+    "per_class": {
+      "car": {
+        "P": 0.043,
+        "R": 0.167,
+        "mAP50": 0.032,
+        "mAP50_95": 0.013
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_HardRainNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_HardRainNight",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.015,
+    "R": 0.045,
+    "mAP50": 0.012,
+    "mAP50_95": 0.005,
+    "inference_ms": 5.57,
+    "total_ms": 8.25,
+    "wall_s": 14.9,
+    "per_class": {
+      "car": {
+        "P": 0.03,
+        "R": 0.089,
+        "mAP50": 0.024,
+        "mAP50_95": 0.011
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_HardRainNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_HardRainNight",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.012,
+    "R": 0.042,
+    "mAP50": 0.002,
+    "mAP50_95": 0.001,
+    "inference_ms": 11.87,
+    "total_ms": 17.0,
+    "wall_s": 16.4,
+    "per_class": {
+      "car": {
+        "P": 0.023,
+        "R": 0.083,
+        "mAP50": 0.004,
+        "mAP50_95": 0.002
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_HardRainNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_HardRainNight",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.021,
+    "R": 0.074,
+    "mAP50": 0.018,
+    "mAP50_95": 0.012,
+    "inference_ms": 10.07,
+    "total_ms": 12.41,
+    "wall_s": 16.2,
+    "per_class": {
+      "car": {
+        "P": 0.042,
+        "R": 0.149,
+        "mAP50": 0.036,
+        "mAP50_95": 0.023
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_HardRainNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_HardRainNight",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.024,
+    "R": 0.058,
+    "mAP50": 0.024,
+    "mAP50_95": 0.011,
+    "inference_ms": 23.4,
+    "total_ms": 28.41,
+    "wall_s": 18.6,
+    "per_class": {
+      "car": {
+        "P": 0.049,
+        "R": 0.116,
+        "mAP50": 0.048,
+        "mAP50_95": 0.023
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_HardRainNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_HardRainNoon",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.484,
+    "R": 0.181,
+    "mAP50": 0.261,
+    "mAP50_95": 0.199,
+    "inference_ms": 5.5,
+    "total_ms": 7.88,
+    "wall_s": 15.3,
+    "per_class": {
+      "car": {
+        "P": 0.968,
+        "R": 0.362,
+        "mAP50": 0.513,
+        "mAP50_95": 0.394
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.009,
+        "mAP50_95": 0.005
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_HardRainNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_HardRainNoon",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.478,
+    "R": 0.448,
+    "mAP50": 0.261,
+    "mAP50_95": 0.2,
+    "inference_ms": 37.39,
+    "total_ms": 52.14,
+    "wall_s": 23.6,
+    "per_class": {
+      "car": {
+        "P": 0.937,
+        "R": 0.395,
+        "mAP50": 0.494,
+        "mAP50_95": 0.383
+      },
+      "truck": {
+        "P": 0.019,
+        "R": 0.5,
+        "mAP50": 0.029,
+        "mAP50_95": 0.018
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_HardRainNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_HardRainNoon",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.468,
+    "R": 0.217,
+    "mAP50": 0.289,
+    "mAP50_95": 0.216,
+    "inference_ms": 194.6,
+    "total_ms": 200.83,
+    "wall_s": 49.8,
+    "per_class": {
+      "car": {
+        "P": 0.936,
+        "R": 0.434,
+        "mAP50": 0.564,
+        "mAP50_95": 0.425
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.013,
+        "mAP50_95": 0.007
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_HardRainNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_HardRainNoon",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.436,
+    "R": 0.211,
+    "mAP50": 0.283,
+    "mAP50_95": 0.223,
+    "inference_ms": 172.25,
+    "total_ms": 182.76,
+    "wall_s": 46.8,
+    "per_class": {
+      "car": {
+        "P": 0.871,
+        "R": 0.422,
+        "mAP50": 0.537,
+        "mAP50_95": 0.427
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.029,
+        "mAP50_95": 0.018
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_HardRainNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_HardRainNoon",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.478,
+    "R": 0.13,
+    "mAP50": 0.216,
+    "mAP50_95": 0.184,
+    "inference_ms": 40.04,
+    "total_ms": 44.57,
+    "wall_s": 27.8,
+    "per_class": {
+      "car": {
+        "P": 0.956,
+        "R": 0.26,
+        "mAP50": 0.432,
+        "mAP50_95": 0.368
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_HardRainNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_HardRainNoon",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.432,
+    "R": 0.145,
+    "mAP50": 0.227,
+    "mAP50_95": 0.187,
+    "inference_ms": 16.73,
+    "total_ms": 23.81,
+    "wall_s": 23.0,
+    "per_class": {
+      "car": {
+        "P": 0.865,
+        "R": 0.291,
+        "mAP50": 0.449,
+        "mAP50_95": 0.372
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.005,
+        "mAP50_95": 0.003
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_HardRainNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_HardRainNoon",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.386,
+    "R": 0.274,
+    "mAP50": 0.348,
+    "mAP50_95": 0.273,
+    "inference_ms": 15.0,
+    "total_ms": 19.03,
+    "wall_s": 20.0,
+    "per_class": {
+      "car": {
+        "P": 0.772,
+        "R": 0.549,
+        "mAP50": 0.661,
+        "mAP50_95": 0.523
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.036,
+        "mAP50_95": 0.023
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_HardRainNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_HardRainNoon",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.458,
+    "R": 0.748,
+    "mAP50": 0.331,
+    "mAP50_95": 0.266,
+    "inference_ms": 60.32,
+    "total_ms": 68.79,
+    "wall_s": 29.0,
+    "per_class": {
+      "car": {
+        "P": 0.866,
+        "R": 0.496,
+        "mAP50": 0.603,
+        "mAP50_95": 0.49
+      },
+      "truck": {
+        "P": 0.05,
+        "R": 1.0,
+        "mAP50": 0.059,
+        "mAP50_95": 0.041
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_Storm",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_Storm",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.435,
+    "R": 0.139,
+    "mAP50": 0.191,
+    "mAP50_95": 0.15,
+    "inference_ms": 12.77,
+    "total_ms": 17.55,
+    "wall_s": 8.9,
+    "per_class": {
+      "car": {
+        "P": 0.871,
+        "R": 0.279,
+        "mAP50": 0.374,
+        "mAP50_95": 0.297
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.007,
+        "mAP50_95": 0.003
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_Storm",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_Storm",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.387,
+    "R": 0.395,
+    "mAP50": 0.191,
+    "mAP50_95": 0.149,
+    "inference_ms": 29.53,
+    "total_ms": 38.0,
+    "wall_s": 11.6,
+    "per_class": {
+      "car": {
+        "P": 0.754,
+        "R": 0.291,
+        "mAP50": 0.351,
+        "mAP50_95": 0.278
+      },
+      "truck": {
+        "P": 0.021,
+        "R": 0.5,
+        "mAP50": 0.031,
+        "mAP50_95": 0.02
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_Storm",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_Storm",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.28,
+    "R": 0.158,
+    "mAP50": 0.17,
+    "mAP50_95": 0.14,
+    "inference_ms": 26.14,
+    "total_ms": 30.85,
+    "wall_s": 10.9,
+    "per_class": {
+      "car": {
+        "P": 0.56,
+        "R": 0.317,
+        "mAP50": 0.339,
+        "mAP50_95": 0.279
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.002,
+        "mAP50_95": 0.001
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_Storm",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_Storm",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.433,
+    "R": 0.148,
+    "mAP50": 0.189,
+    "mAP50_95": 0.153,
+    "inference_ms": 60.85,
+    "total_ms": 68.89,
+    "wall_s": 16.5,
+    "per_class": {
+      "car": {
+        "P": 0.867,
+        "R": 0.297,
+        "mAP50": 0.366,
+        "mAP50_95": 0.297
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.012,
+        "mAP50_95": 0.009
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_Storm",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_Storm",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.482,
+    "R": 0.12,
+    "mAP50": 0.173,
+    "mAP50_95": 0.136,
+    "inference_ms": 13.93,
+    "total_ms": 18.6,
+    "wall_s": 8.8,
+    "per_class": {
+      "car": {
+        "P": 0.965,
+        "R": 0.24,
+        "mAP50": 0.344,
+        "mAP50_95": 0.271
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.002,
+        "mAP50_95": 0.001
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_Storm",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_Storm",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.424,
+    "R": 0.099,
+    "mAP50": 0.171,
+    "mAP50_95": 0.126,
+    "inference_ms": 31.09,
+    "total_ms": 39.58,
+    "wall_s": 12.3,
+    "per_class": {
+      "car": {
+        "P": 0.847,
+        "R": 0.197,
+        "mAP50": 0.317,
+        "mAP50_95": 0.232
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.026,
+        "mAP50_95": 0.019
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_Storm",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_Storm",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.389,
+    "R": 0.196,
+    "mAP50": 0.242,
+    "mAP50_95": 0.186,
+    "inference_ms": 27.59,
+    "total_ms": 33.22,
+    "wall_s": 11.3,
+    "per_class": {
+      "car": {
+        "P": 0.777,
+        "R": 0.393,
+        "mAP50": 0.477,
+        "mAP50_95": 0.369
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.006,
+        "mAP50_95": 0.002
+      }
+    }
+  },
+  {
+    "dataset": "cond_town03_Storm",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_town03\\cond_town03_Storm",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.379,
+    "R": 0.461,
+    "mAP50": 0.255,
+    "mAP50_95": 0.198,
+    "inference_ms": 62.62,
+    "total_ms": 71.55,
+    "wall_s": 17.0,
+    "per_class": {
+      "car": {
+        "P": 0.739,
+        "R": 0.421,
+        "mAP50": 0.474,
+        "mAP50_95": 0.373
+      },
+      "truck": {
+        "P": 0.019,
+        "R": 0.5,
+        "mAP50": 0.036,
+        "mAP50_95": 0.023
+      }
+    }
+  }
+]

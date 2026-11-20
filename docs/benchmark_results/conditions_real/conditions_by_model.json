@@ -1,0 +1,1394 @@
+[
+  {
+    "dataset": "cond_s101_ClearNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_ClearNight",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.56,
+    "R": 0.128,
+    "mAP50": 0.137,
+    "mAP50_95": 0.121,
+    "inference_ms": 15.46,
+    "total_ms": 22.34,
+    "wall_s": 38.7,
+    "per_class": {
+      "car": {
+        "P": 0.236,
+        "R": 0.011,
+        "mAP50": 0.007,
+        "mAP50_95": 0.004
+      },
+      "truck": {
+        "P": 0.884,
+        "R": 0.246,
+        "mAP50": 0.267,
+        "mAP50_95": 0.239
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_ClearNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_ClearNight",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.54,
+    "R": 0.123,
+    "mAP50": 0.15,
+    "mAP50_95": 0.127,
+    "inference_ms": 35.29,
+    "total_ms": 83.43,
+    "wall_s": 40.3,
+    "per_class": {
+      "car": {
+        "P": 0.137,
+        "R": 0.005,
+        "mAP50": 0.016,
+        "mAP50_95": 0.005
+      },
+      "truck": {
+        "P": 0.944,
+        "R": 0.242,
+        "mAP50": 0.285,
+        "mAP50_95": 0.249
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_ClearNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_ClearNight",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.627,
+    "R": 0.203,
+    "mAP50": 0.308,
+    "mAP50_95": 0.248,
+    "inference_ms": 24.52,
+    "total_ms": 32.29,
+    "wall_s": 33.2,
+    "per_class": {
+      "car": {
+        "P": 0.254,
+        "R": 0.011,
+        "mAP50": 0.03,
+        "mAP50_95": 0.014
+      },
+      "truck": {
+        "P": 1.0,
+        "R": 0.396,
+        "mAP50": 0.586,
+        "mAP50_95": 0.481
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_ClearNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_ClearNight",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.517,
+    "R": 0.217,
+    "mAP50": 0.312,
+    "mAP50_95": 0.247,
+    "inference_ms": 111.39,
+    "total_ms": 131.03,
+    "wall_s": 51.8,
+    "per_class": {
+      "car": {
+        "P": 0.218,
+        "R": 0.015,
+        "mAP50": 0.024,
+        "mAP50_95": 0.01
+      },
+      "truck": {
+        "P": 0.816,
+        "R": 0.419,
+        "mAP50": 0.6,
+        "mAP50_95": 0.484
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_ClearNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_ClearNight",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.432,
+    "R": 0.121,
+    "mAP50": 0.152,
+    "mAP50_95": 0.129,
+    "inference_ms": 21.71,
+    "total_ms": 31.22,
+    "wall_s": 33.6,
+    "per_class": {
+      "car": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.008,
+        "mAP50_95": 0.003
+      },
+      "truck": {
+        "P": 0.864,
+        "R": 0.242,
+        "mAP50": 0.296,
+        "mAP50_95": 0.255
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_ClearNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_ClearNight",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.494,
+    "R": 0.153,
+    "mAP50": 0.207,
+    "mAP50_95": 0.181,
+    "inference_ms": 45.62,
+    "total_ms": 65.48,
+    "wall_s": 41.1,
+    "per_class": {
+      "car": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.003,
+        "mAP50_95": 0.001
+      },
+      "truck": {
+        "P": 0.988,
+        "R": 0.306,
+        "mAP50": 0.41,
+        "mAP50_95": 0.362
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_ClearNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_ClearNight",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.638,
+    "R": 0.138,
+    "mAP50": 0.21,
+    "mAP50_95": 0.181,
+    "inference_ms": 43.88,
+    "total_ms": 53.09,
+    "wall_s": 36.6,
+    "per_class": {
+      "car": {
+        "P": 0.276,
+        "R": 0.033,
+        "mAP50": 0.026,
+        "mAP50_95": 0.015
+      },
+      "truck": {
+        "P": 1.0,
+        "R": 0.243,
+        "mAP50": 0.394,
+        "mAP50_95": 0.346
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_ClearNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_ClearNight",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.296,
+    "R": 0.302,
+    "mAP50": 0.23,
+    "mAP50_95": 0.198,
+    "inference_ms": 64.47,
+    "total_ms": 79.73,
+    "wall_s": 39.3,
+    "per_class": {
+      "car": {
+        "P": 0.054,
+        "R": 0.152,
+        "mAP50": 0.021,
+        "mAP50_95": 0.011
+      },
+      "truck": {
+        "P": 0.538,
+        "R": 0.452,
+        "mAP50": 0.438,
+        "mAP50_95": 0.386
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_ClearNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_ClearNoon",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.813,
+    "R": 0.601,
+    "mAP50": 0.741,
+    "mAP50_95": 0.581,
+    "inference_ms": 20.28,
+    "total_ms": 29.65,
+    "wall_s": 34.5,
+    "per_class": {
+      "car": {
+        "P": 0.926,
+        "R": 0.524,
+        "mAP50": 0.761,
+        "mAP50_95": 0.539
+      },
+      "truck": {
+        "P": 0.7,
+        "R": 0.677,
+        "mAP50": 0.722,
+        "mAP50_95": 0.623
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_ClearNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_ClearNoon",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.813,
+    "R": 0.754,
+    "mAP50": 0.868,
+    "mAP50_95": 0.709,
+    "inference_ms": 26.41,
+    "total_ms": 35.54,
+    "wall_s": 30.5,
+    "per_class": {
+      "car": {
+        "P": 0.936,
+        "R": 0.637,
+        "mAP50": 0.848,
+        "mAP50_95": 0.661
+      },
+      "truck": {
+        "P": 0.69,
+        "R": 0.871,
+        "mAP50": 0.887,
+        "mAP50_95": 0.756
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_ClearNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_ClearNoon",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.827,
+    "R": 0.84,
+    "mAP50": 0.879,
+    "mAP50_95": 0.715,
+    "inference_ms": 10.67,
+    "total_ms": 13.18,
+    "wall_s": 16.5,
+    "per_class": {
+      "car": {
+        "P": 0.943,
+        "R": 0.761,
+        "mAP50": 0.909,
+        "mAP50_95": 0.708
+      },
+      "truck": {
+        "P": 0.71,
+        "R": 0.919,
+        "mAP50": 0.849,
+        "mAP50_95": 0.721
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_ClearNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_ClearNoon",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.917,
+    "R": 0.798,
+    "mAP50": 0.915,
+    "mAP50_95": 0.759,
+    "inference_ms": 22.9,
+    "total_ms": 27.72,
+    "wall_s": 18.3,
+    "per_class": {
+      "car": {
+        "P": 0.986,
+        "R": 0.693,
+        "mAP50": 0.887,
+        "mAP50_95": 0.743
+      },
+      "truck": {
+        "P": 0.848,
+        "R": 0.903,
+        "mAP50": 0.942,
+        "mAP50_95": 0.776
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_ClearNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_ClearNoon",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.76,
+    "R": 0.595,
+    "mAP50": 0.709,
+    "mAP50_95": 0.557,
+    "inference_ms": 5.41,
+    "total_ms": 7.96,
+    "wall_s": 14.5,
+    "per_class": {
+      "car": {
+        "P": 0.816,
+        "R": 0.61,
+        "mAP50": 0.774,
+        "mAP50_95": 0.549
+      },
+      "truck": {
+        "P": 0.704,
+        "R": 0.581,
+        "mAP50": 0.644,
+        "mAP50_95": 0.566
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_ClearNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_ClearNoon",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.896,
+    "R": 0.74,
+    "mAP50": 0.89,
+    "mAP50_95": 0.723,
+    "inference_ms": 11.03,
+    "total_ms": 15.55,
+    "wall_s": 15.8,
+    "per_class": {
+      "car": {
+        "P": 0.864,
+        "R": 0.594,
+        "mAP50": 0.83,
+        "mAP50_95": 0.62
+      },
+      "truck": {
+        "P": 0.928,
+        "R": 0.887,
+        "mAP50": 0.95,
+        "mAP50_95": 0.827
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_ClearNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_ClearNoon",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.902,
+    "R": 0.828,
+    "mAP50": 0.911,
+    "mAP50_95": 0.765,
+    "inference_ms": 10.31,
+    "total_ms": 12.54,
+    "wall_s": 15.1,
+    "per_class": {
+      "car": {
+        "P": 0.943,
+        "R": 0.753,
+        "mAP50": 0.878,
+        "mAP50_95": 0.705
+      },
+      "truck": {
+        "P": 0.861,
+        "R": 0.902,
+        "mAP50": 0.945,
+        "mAP50_95": 0.825
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_ClearNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_ClearNoon",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.983,
+    "R": 0.856,
+    "mAP50": 0.93,
+    "mAP50_95": 0.775,
+    "inference_ms": 22.98,
+    "total_ms": 27.36,
+    "wall_s": 17.4,
+    "per_class": {
+      "car": {
+        "P": 0.973,
+        "R": 0.761,
+        "mAP50": 0.884,
+        "mAP50_95": 0.728
+      },
+      "truck": {
+        "P": 0.992,
+        "R": 0.952,
+        "mAP50": 0.977,
+        "mAP50_95": 0.821
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_Dusk",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_Dusk",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.624,
+    "R": 0.387,
+    "mAP50": 0.462,
+    "mAP50_95": 0.386,
+    "inference_ms": 5.4,
+    "total_ms": 7.92,
+    "wall_s": 14.5,
+    "per_class": {
+      "car": {
+        "P": 0.782,
+        "R": 0.452,
+        "mAP50": 0.617,
+        "mAP50_95": 0.483
+      },
+      "truck": {
+        "P": 0.466,
+        "R": 0.323,
+        "mAP50": 0.308,
+        "mAP50_95": 0.288
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_Dusk",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_Dusk",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.821,
+    "R": 0.714,
+    "mAP50": 0.823,
+    "mAP50_95": 0.682,
+    "inference_ms": 11.19,
+    "total_ms": 15.87,
+    "wall_s": 15.7,
+    "per_class": {
+      "car": {
+        "P": 0.85,
+        "R": 0.689,
+        "mAP50": 0.823,
+        "mAP50_95": 0.673
+      },
+      "truck": {
+        "P": 0.792,
+        "R": 0.738,
+        "mAP50": 0.824,
+        "mAP50_95": 0.692
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_Dusk",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_Dusk",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.75,
+    "R": 0.687,
+    "mAP50": 0.742,
+    "mAP50_95": 0.612,
+    "inference_ms": 10.47,
+    "total_ms": 13.18,
+    "wall_s": 15.8,
+    "per_class": {
+      "car": {
+        "P": 0.804,
+        "R": 0.746,
+        "mAP50": 0.847,
+        "mAP50_95": 0.689
+      },
+      "truck": {
+        "P": 0.697,
+        "R": 0.629,
+        "mAP50": 0.637,
+        "mAP50_95": 0.536
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_Dusk",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_Dusk",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.969,
+    "R": 0.71,
+    "mAP50": 0.859,
+    "mAP50_95": 0.737,
+    "inference_ms": 22.84,
+    "total_ms": 27.71,
+    "wall_s": 18.3,
+    "per_class": {
+      "car": {
+        "P": 0.969,
+        "R": 0.711,
+        "mAP50": 0.859,
+        "mAP50_95": 0.733
+      },
+      "truck": {
+        "P": 0.97,
+        "R": 0.71,
+        "mAP50": 0.86,
+        "mAP50_95": 0.742
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_Dusk",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_Dusk",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.681,
+    "R": 0.401,
+    "mAP50": 0.477,
+    "mAP50_95": 0.39,
+    "inference_ms": 4.91,
+    "total_ms": 7.65,
+    "wall_s": 14.7,
+    "per_class": {
+      "car": {
+        "P": 0.834,
+        "R": 0.494,
+        "mAP50": 0.64,
+        "mAP50_95": 0.479
+      },
+      "truck": {
+        "P": 0.529,
+        "R": 0.308,
+        "mAP50": 0.314,
+        "mAP50_95": 0.301
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_Dusk",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_Dusk",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.759,
+    "R": 0.571,
+    "mAP50": 0.682,
+    "mAP50_95": 0.575,
+    "inference_ms": 11.04,
+    "total_ms": 15.82,
+    "wall_s": 16.0,
+    "per_class": {
+      "car": {
+        "P": 0.762,
+        "R": 0.561,
+        "mAP50": 0.725,
+        "mAP50_95": 0.559
+      },
+      "truck": {
+        "P": 0.757,
+        "R": 0.581,
+        "mAP50": 0.638,
+        "mAP50_95": 0.59
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_Dusk",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_Dusk",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.89,
+    "R": 0.558,
+    "mAP50": 0.696,
+    "mAP50_95": 0.597,
+    "inference_ms": 10.27,
+    "total_ms": 12.74,
+    "wall_s": 15.1,
+    "per_class": {
+      "car": {
+        "P": 0.962,
+        "R": 0.696,
+        "mAP50": 0.881,
+        "mAP50_95": 0.717
+      },
+      "truck": {
+        "P": 0.817,
+        "R": 0.419,
+        "mAP50": 0.511,
+        "mAP50_95": 0.477
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_Dusk",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_Dusk",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.931,
+    "R": 0.808,
+    "mAP50": 0.91,
+    "mAP50_95": 0.792,
+    "inference_ms": 23.09,
+    "total_ms": 28.33,
+    "wall_s": 17.8,
+    "per_class": {
+      "car": {
+        "P": 0.915,
+        "R": 0.777,
+        "mAP50": 0.885,
+        "mAP50_95": 0.75
+      },
+      "truck": {
+        "P": 0.946,
+        "R": 0.839,
+        "mAP50": 0.935,
+        "mAP50_95": 0.833
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_HardRainNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_HardRainNight",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.001,
+    "R": 0.001,
+    "mAP50": 0.0,
+    "mAP50_95": 0.0,
+    "inference_ms": 5.42,
+    "total_ms": 7.91,
+    "wall_s": 14.8,
+    "per_class": {
+      "car": {
+        "P": 0.002,
+        "R": 0.002,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_HardRainNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_HardRainNight",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.0,
+    "R": 0.0,
+    "mAP50": 0.0,
+    "mAP50_95": 0.0,
+    "inference_ms": 11.51,
+    "total_ms": 16.15,
+    "wall_s": 15.9,
+    "per_class": {
+      "car": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_HardRainNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_HardRainNight",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.003,
+    "R": 0.003,
+    "mAP50": 0.0,
+    "mAP50_95": 0.0,
+    "inference_ms": 10.57,
+    "total_ms": 13.07,
+    "wall_s": 15.3,
+    "per_class": {
+      "car": {
+        "P": 0.005,
+        "R": 0.005,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      },
+      "truck": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_HardRainNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_HardRainNight",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.126,
+    "R": 0.009,
+    "mAP50": 0.004,
+    "mAP50_95": 0.003,
+    "inference_ms": 22.39,
+    "total_ms": 27.44,
+    "wall_s": 17.6,
+    "per_class": {
+      "car": {
+        "P": 0.003,
+        "R": 0.002,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      },
+      "truck": {
+        "P": 0.25,
+        "R": 0.016,
+        "mAP50": 0.007,
+        "mAP50_95": 0.006
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_HardRainNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_HardRainNight",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.011,
+    "R": 0.033,
+    "mAP50": 0.002,
+    "mAP50_95": 0.001,
+    "inference_ms": 4.91,
+    "total_ms": 7.52,
+    "wall_s": 14.5,
+    "per_class": {
+      "car": {
+        "P": 0.001,
+        "R": 0.002,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      },
+      "truck": {
+        "P": 0.021,
+        "R": 0.065,
+        "mAP50": 0.003,
+        "mAP50_95": 0.002
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_HardRainNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_HardRainNight",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.006,
+    "R": 0.032,
+    "mAP50": 0.002,
+    "mAP50_95": 0.001,
+    "inference_ms": 11.73,
+    "total_ms": 16.96,
+    "wall_s": 16.0,
+    "per_class": {
+      "car": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      },
+      "truck": {
+        "P": 0.013,
+        "R": 0.065,
+        "mAP50": 0.004,
+        "mAP50_95": 0.002
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_HardRainNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_HardRainNight",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.043,
+    "R": 0.059,
+    "mAP50": 0.022,
+    "mAP50_95": 0.015,
+    "inference_ms": 9.75,
+    "total_ms": 12.33,
+    "wall_s": 15.5,
+    "per_class": {
+      "car": {
+        "P": 0.007,
+        "R": 0.005,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      },
+      "truck": {
+        "P": 0.08,
+        "R": 0.113,
+        "mAP50": 0.044,
+        "mAP50_95": 0.029
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_HardRainNight",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_HardRainNight",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.056,
+    "R": 0.016,
+    "mAP50": 0.018,
+    "mAP50_95": 0.011,
+    "inference_ms": 22.34,
+    "total_ms": 28.19,
+    "wall_s": 18.3,
+    "per_class": {
+      "car": {
+        "P": 0.0,
+        "R": 0.0,
+        "mAP50": 0.0,
+        "mAP50_95": 0.0
+      },
+      "truck": {
+        "P": 0.111,
+        "R": 0.032,
+        "mAP50": 0.035,
+        "mAP50_95": 0.023
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_HardRainNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_HardRainNoon",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.331,
+    "R": 0.209,
+    "mAP50": 0.238,
+    "mAP50_95": 0.194,
+    "inference_ms": 5.23,
+    "total_ms": 8.13,
+    "wall_s": 15.0,
+    "per_class": {
+      "car": {
+        "P": 0.435,
+        "R": 0.208,
+        "mAP50": 0.277,
+        "mAP50_95": 0.206
+      },
+      "truck": {
+        "P": 0.228,
+        "R": 0.21,
+        "mAP50": 0.2,
+        "mAP50_95": 0.181
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_HardRainNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_HardRainNoon",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.58,
+    "R": 0.396,
+    "mAP50": 0.426,
+    "mAP50_95": 0.347,
+    "inference_ms": 10.65,
+    "total_ms": 15.84,
+    "wall_s": 15.8,
+    "per_class": {
+      "car": {
+        "P": 0.736,
+        "R": 0.406,
+        "mAP50": 0.532,
+        "mAP50_95": 0.412
+      },
+      "truck": {
+        "P": 0.423,
+        "R": 0.387,
+        "mAP50": 0.321,
+        "mAP50_95": 0.281
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_HardRainNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_HardRainNoon",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.581,
+    "R": 0.373,
+    "mAP50": 0.426,
+    "mAP50_95": 0.352,
+    "inference_ms": 10.39,
+    "total_ms": 13.06,
+    "wall_s": 15.3,
+    "per_class": {
+      "car": {
+        "P": 0.72,
+        "R": 0.455,
+        "mAP50": 0.582,
+        "mAP50_95": 0.455
+      },
+      "truck": {
+        "P": 0.442,
+        "R": 0.29,
+        "mAP50": 0.27,
+        "mAP50_95": 0.25
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_HardRainNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_HardRainNoon",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.687,
+    "R": 0.442,
+    "mAP50": 0.512,
+    "mAP50_95": 0.42,
+    "inference_ms": 22.43,
+    "total_ms": 27.53,
+    "wall_s": 18.5,
+    "per_class": {
+      "car": {
+        "P": 0.873,
+        "R": 0.578,
+        "mAP50": 0.711,
+        "mAP50_95": 0.55
+      },
+      "truck": {
+        "P": 0.501,
+        "R": 0.306,
+        "mAP50": 0.313,
+        "mAP50_95": 0.289
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_HardRainNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_HardRainNoon",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.561,
+    "R": 0.205,
+    "mAP50": 0.279,
+    "mAP50_95": 0.22,
+    "inference_ms": 5.34,
+    "total_ms": 8.6,
+    "wall_s": 15.7,
+    "per_class": {
+      "car": {
+        "P": 0.733,
+        "R": 0.136,
+        "mAP50": 0.303,
+        "mAP50_95": 0.21
+      },
+      "truck": {
+        "P": 0.389,
+        "R": 0.274,
+        "mAP50": 0.256,
+        "mAP50_95": 0.23
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_HardRainNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_HardRainNoon",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.697,
+    "R": 0.276,
+    "mAP50": 0.383,
+    "mAP50_95": 0.3,
+    "inference_ms": 11.35,
+    "total_ms": 16.72,
+    "wall_s": 16.2,
+    "per_class": {
+      "car": {
+        "P": 0.76,
+        "R": 0.181,
+        "mAP50": 0.333,
+        "mAP50_95": 0.228
+      },
+      "truck": {
+        "P": 0.634,
+        "R": 0.371,
+        "mAP50": 0.433,
+        "mAP50_95": 0.372
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_HardRainNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_HardRainNoon",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.735,
+    "R": 0.494,
+    "mAP50": 0.582,
+    "mAP50_95": 0.469,
+    "inference_ms": 10.36,
+    "total_ms": 13.02,
+    "wall_s": 15.3,
+    "per_class": {
+      "car": {
+        "P": 0.971,
+        "R": 0.552,
+        "mAP50": 0.754,
+        "mAP50_95": 0.567
+      },
+      "truck": {
+        "P": 0.498,
+        "R": 0.435,
+        "mAP50": 0.41,
+        "mAP50_95": 0.371
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_HardRainNoon",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_HardRainNoon",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.863,
+    "R": 0.506,
+    "mAP50": 0.622,
+    "mAP50_95": 0.515,
+    "inference_ms": 22.61,
+    "total_ms": 27.49,
+    "wall_s": 17.9,
+    "per_class": {
+      "car": {
+        "P": 0.919,
+        "R": 0.592,
+        "mAP50": 0.746,
+        "mAP50_95": 0.594
+      },
+      "truck": {
+        "P": 0.807,
+        "R": 0.419,
+        "mAP50": 0.499,
+        "mAP50_95": 0.437
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_Storm",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_Storm",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.217,
+    "R": 0.238,
+    "mAP50": 0.111,
+    "mAP50_95": 0.085,
+    "inference_ms": 5.5,
+    "total_ms": 8.15,
+    "wall_s": 14.7,
+    "per_class": {
+      "car": {
+        "P": 0.298,
+        "R": 0.185,
+        "mAP50": 0.123,
+        "mAP50_95": 0.085
+      },
+      "truck": {
+        "P": 0.137,
+        "R": 0.29,
+        "mAP50": 0.1,
+        "mAP50_95": 0.085
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_Storm",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_Storm",
+    "images": 150,
+    "model": "yolov8n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.327,
+    "R": 0.306,
+    "mAP50": 0.2,
+    "mAP50_95": 0.157,
+    "inference_ms": 11.7,
+    "total_ms": 16.77,
+    "wall_s": 16.0,
+    "per_class": {
+      "car": {
+        "P": 0.44,
+        "R": 0.242,
+        "mAP50": 0.208,
+        "mAP50_95": 0.152
+      },
+      "truck": {
+        "P": 0.214,
+        "R": 0.371,
+        "mAP50": 0.191,
+        "mAP50_95": 0.162
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_Storm",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_Storm",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.343,
+    "R": 0.331,
+    "mAP50": 0.216,
+    "mAP50_95": 0.172,
+    "inference_ms": 10.26,
+    "total_ms": 12.67,
+    "wall_s": 15.3,
+    "per_class": {
+      "car": {
+        "P": 0.502,
+        "R": 0.388,
+        "mAP50": 0.317,
+        "mAP50_95": 0.239
+      },
+      "truck": {
+        "P": 0.185,
+        "R": 0.274,
+        "mAP50": 0.115,
+        "mAP50_95": 0.105
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_Storm",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_Storm",
+    "images": 150,
+    "model": "yolov8s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.376,
+    "R": 0.389,
+    "mAP50": 0.278,
+    "mAP50_95": 0.221,
+    "inference_ms": 22.75,
+    "total_ms": 28.31,
+    "wall_s": 17.5,
+    "per_class": {
+      "car": {
+        "P": 0.549,
+        "R": 0.455,
+        "mAP50": 0.39,
+        "mAP50_95": 0.291
+      },
+      "truck": {
+        "P": 0.204,
+        "R": 0.323,
+        "mAP50": 0.166,
+        "mAP50_95": 0.151
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_Storm",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_Storm",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.239,
+    "R": 0.27,
+    "mAP50": 0.136,
+    "mAP50_95": 0.1,
+    "inference_ms": 5.1,
+    "total_ms": 7.7,
+    "wall_s": 14.7,
+    "per_class": {
+      "car": {
+        "P": 0.335,
+        "R": 0.168,
+        "mAP50": 0.152,
+        "mAP50_95": 0.097
+      },
+      "truck": {
+        "P": 0.143,
+        "R": 0.371,
+        "mAP50": 0.12,
+        "mAP50_95": 0.103
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_Storm",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_Storm",
+    "images": 150,
+    "model": "yolo11n",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.274,
+    "R": 0.271,
+    "mAP50": 0.239,
+    "mAP50_95": 0.19,
+    "inference_ms": 11.34,
+    "total_ms": 16.03,
+    "wall_s": 15.6,
+    "per_class": {
+      "car": {
+        "P": 0.357,
+        "R": 0.123,
+        "mAP50": 0.173,
+        "mAP50_95": 0.115
+      },
+      "truck": {
+        "P": 0.191,
+        "R": 0.419,
+        "mAP50": 0.306,
+        "mAP50_95": 0.266
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_Storm",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_Storm",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1280,
+    "device": "0",
+    "P": 0.395,
+    "R": 0.484,
+    "mAP50": 0.386,
+    "mAP50_95": 0.301,
+    "inference_ms": 9.86,
+    "total_ms": 12.34,
+    "wall_s": 15.3,
+    "per_class": {
+      "car": {
+        "P": 0.64,
+        "R": 0.533,
+        "mAP50": 0.479,
+        "mAP50_95": 0.339
+      },
+      "truck": {
+        "P": 0.149,
+        "R": 0.435,
+        "mAP50": 0.294,
+        "mAP50_95": 0.263
+      }
+    }
+  },
+  {
+    "dataset": "cond_s101_Storm",
+    "dataset_path": "C:\\roundwatch\\data\\yolo_benchmark\\conditions_real\\cond_s101_Storm",
+    "images": 150,
+    "model": "yolo11s",
+    "imgsz": 1920,
+    "device": "0",
+    "P": 0.495,
+    "R": 0.384,
+    "mAP50": 0.382,
+    "mAP50_95": 0.307,
+    "inference_ms": 22.66,
+    "total_ms": 27.36,
+    "wall_s": 17.3,
+    "per_class": {
+      "car": {
+        "P": 0.59,
+        "R": 0.414,
+        "mAP50": 0.42,
+        "mAP50_95": 0.307
+      },
+      "truck": {
+        "P": 0.4,
+        "R": 0.355,
+        "mAP50": 0.343,
+        "mAP50_95": 0.306
+      }
+    }
+  }
+]
